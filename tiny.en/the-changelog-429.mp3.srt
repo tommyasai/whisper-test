@@ -1,0 +1,4596 @@
+1
+00:00:00,000 --> 00:00:04,240
+This week on the James Law, we're talking about the recent falling-up between elastic
+
+2
+00:00:04,240 --> 00:00:08,840
+and AWS around the reslicensing of elastic search and cabana.
+
+3
+00:00:08,840 --> 00:00:11,240
+Like many of the community, we've been watching this very closely.
+
+4
+00:00:11,240 --> 00:00:13,640
+Here's the TLDR for context.
+
+5
+00:00:13,640 --> 00:00:18,360
+Last month, on January 21st, elastic-poseity blog posts showing their concerns.
+
+6
+00:00:18,360 --> 00:00:23,200
+With Amazon and AWS misleading and confusing the community saying quote, they have been
+
+7
+00:00:23,200 --> 00:00:27,400
+doing things that we think are just not okay since 2015.
+
+8
+00:00:27,400 --> 00:00:30,400
+And it has only gotten worse, end quote.
+
+9
+00:00:30,400 --> 00:00:35,120
+This led them to re-licens elastic search and cabana with a dual license, a proprietary
+
+10
+00:00:35,120 --> 00:00:40,440
+license, and the server-side public license, also known as the SSPL.
+
+11
+00:00:40,440 --> 00:00:44,720
+Of course, AWS responded two days later stating they are quote, stepping up for a truly
+
+12
+00:00:44,720 --> 00:00:49,360
+open-source elastic search end quote and shared their plans to create and maintain forks
+
+13
+00:00:49,360 --> 00:00:54,040
+of elastic search and cabana based on the latest ALV-2 license co-basis.
+
+14
+00:00:54,040 --> 00:00:59,040
+There is, of course, a ton of detail and nuanced beneath the surface here, so we invited
+
+15
+00:00:59,040 --> 00:01:02,040
+a bunch of folks on the show today to share their perspective.
+
+16
+00:01:02,040 --> 00:01:06,200
+You'll hear from Adam Jacob, co-founder and board member of Chef, Heather Meeker, open-source
+
+17
+00:01:06,200 --> 00:01:09,800
+lawyer, and the author of the SSPL license.
+
+18
+00:01:09,800 --> 00:01:16,480
+Manish John, founder and CTO at DGRAVLabs, Paul Diggs, co-founder and CTO at Influx Data,
+
+19
+00:01:16,480 --> 00:01:22,240
+Vicky Bursour, open-source, and free software business strategist, and last, but not least,
+
+20
+00:01:22,240 --> 00:01:25,800
+the markets think this, and every day, we've developed it from Sweden.
+
+21
+00:01:25,800 --> 00:01:29,100
+Huge thanks to our partners, Linode, Fastly, and Lunch Darkly.
+
+22
+00:01:29,100 --> 00:01:33,320
+Linode is our cloud of toys, check them out at linode.com slash change log.
+
+23
+00:01:33,320 --> 00:01:38,040
+Our bandwidth is provided by Fastly, check them out at Fastly.com, and our feature flags
+
+24
+00:01:38,040 --> 00:01:47,520
+are powered by Lunch Darkly, learn more at LunchDarkly.com.
+
+25
+00:01:47,520 --> 00:01:52,160
+Linode is simple, affordable, and accessible cloud computing the developer's trust.
+
+26
+00:01:52,160 --> 00:01:56,000
+Linode is our cloud of toys, we trust them, and we think you should build anything you're
+
+27
+00:01:56,000 --> 00:02:01,240
+working on, a fun side project, or that next big infirmive of work with Linode.
+
+28
+00:02:01,240 --> 00:02:04,320
+The best part, you can get started on a Linode with a hundred dollars in free credit, get
+
+29
+00:02:04,320 --> 00:02:11,280
+all the details at linode.com slash change log, or text, change log to 474747, and get
+
+30
+00:02:11,280 --> 00:02:32,120
+instant access to the hundred dollars in free credit, again, linode.com slash change log.
+
+31
+00:02:32,120 --> 00:02:35,520
+What's up, welcome back, we have an awesome show today, we're here to get community
+
+32
+00:02:35,520 --> 00:02:42,880
+reactions around the elastic versus AWS situation in the SSPO license change of Elasticsearch
+
+33
+00:02:42,880 --> 00:02:43,880
+and Cabana.
+
+34
+00:02:43,880 --> 00:02:48,960
+Elastic relations with the SSPO, and there's a few people on this show that believe they
+
+35
+00:02:48,960 --> 00:02:53,560
+went about that license change the wrong way, but this is not the beginning of the story.
+
+36
+00:02:53,560 --> 00:02:57,520
+This conversation has been going on for a while, in fact, Adam Jacob brought the subject
+
+37
+00:02:57,520 --> 00:03:03,120
+of Elastic and AWS on episode 353 of this show, on that episode we talk with Adam about
+
+38
+00:03:03,120 --> 00:03:07,040
+the war for the soul of a resource, and the title of that episode could not have been more
+
+39
+00:03:07,040 --> 00:03:11,640
+prophetic to kick things off or going back to that conversation with Adam for context.
+
+40
+00:03:11,640 --> 00:03:16,080
+Adam is co-founder and board member of Chef, and we're talking about business models and
+
+41
+00:03:16,080 --> 00:03:20,080
+how they correlate to open source business models, and how from Adam's perspective,
+
+42
+00:03:20,080 --> 00:03:25,720
+the AWS's, the Azure's, and the Google class of the world, they provide a humongous marketing
+
+43
+00:03:25,720 --> 00:03:29,440
+funnel for open source businesses like Mongo Analystic.
+
+44
+00:03:29,440 --> 00:03:31,360
+Here's the conversation with Adam.
+
+45
+00:03:31,360 --> 00:03:34,560
+What's up with the business challenges commercial open source companies face?
+
+46
+00:03:34,560 --> 00:03:38,720
+You said earlier in the call that things are thriving now, and we see Elastic and others
+
+47
+00:03:38,720 --> 00:03:42,560
+out there thriving as well that have been in similar situations as Chef.
+
+48
+00:03:42,560 --> 00:03:44,560
+Talk about the business side of things for Chef.
+
+49
+00:03:44,560 --> 00:03:47,960
+I think in order to really go deeper into the business, we've got to just set some ground
+
+50
+00:03:47,960 --> 00:03:53,880
+rules for how we think about business, so how I think about it, and how a lot of people
+
+51
+00:03:53,880 --> 00:03:59,640
+in the modern era software startups think about it is the smallest nutshell.
+
+52
+00:03:59,640 --> 00:04:04,120
+You can imagine that you have this funnel, and at the top of the funnel is everybody who
+
+53
+00:04:04,120 --> 00:04:09,040
+might could ever use your product, so every possible person who would ever care, so that's
+
+54
+00:04:09,040 --> 00:04:10,440
+your target market.
+
+55
+00:04:10,440 --> 00:04:16,240
+The bottom of the funnel is customers, people who pay you money for the privilege, and
+
+56
+00:04:16,240 --> 00:04:19,040
+what you're trying to do is get people from the top of the funnel to the bottom of the
+
+57
+00:04:19,040 --> 00:04:20,040
+funnel, right?
+
+58
+00:04:20,040 --> 00:04:23,960
+It's just how many people at the top can I push to the bottom, and there's a ratio there
+
+59
+00:04:23,960 --> 00:04:27,080
+where you want that number to be as high as possible.
+
+60
+00:04:27,080 --> 00:04:31,360
+You'd love to get 100% of them, you know that you want, and so you're trying to just
+
+61
+00:04:31,360 --> 00:04:34,280
+extract dollar bills from the top to the bottom.
+
+62
+00:04:34,280 --> 00:04:39,160
+There's a bunch more we could go into in terms of metrics and recurring revenue and all
+
+63
+00:04:39,160 --> 00:04:44,840
+kinds of stuff, but the TLDR there is people at the top, money at the bottom.
+
+64
+00:04:44,840 --> 00:04:49,560
+With open source, we talk about it as an open source business model, but that's wrong
+
+65
+00:04:49,560 --> 00:04:53,800
+in the same way that DevOps isn't a job title.
+
+66
+00:04:53,800 --> 00:04:56,800
+You can't, DevOps isn't a job title, still isn't a job title.
+
+67
+00:04:56,800 --> 00:04:59,680
+It never was a job title, but we lost the war, you know?
+
+68
+00:04:59,680 --> 00:05:03,760
+Like there's plenty of DevOps in the world, and so the idea that that's not a thing,
+
+69
+00:05:03,760 --> 00:05:06,880
+it doesn't matter that I'm a patent about it, right?
+
+70
+00:05:06,880 --> 00:05:08,880
+The same thing's true in open source business models.
+
+71
+00:05:08,880 --> 00:05:10,560
+There is no open source business model.
+
+72
+00:05:10,560 --> 00:05:14,240
+There are business models, and then there is open source, and there are two very different,
+
+73
+00:05:14,240 --> 00:05:15,480
+very separate things.
+
+74
+00:05:15,480 --> 00:05:18,400
+There is nothing unique about open source and business.
+
+75
+00:05:18,400 --> 00:05:19,400
+Business is business.
+
+76
+00:05:19,400 --> 00:05:22,840
+You get people from the top of the funnel to the bottom of the funnel, you either do that
+
+77
+00:05:22,840 --> 00:05:27,560
+with the unit economics that make you money, or don't make you money, if they make you
+
+78
+00:05:27,560 --> 00:05:31,880
+money, then you can pour more dollar bills into the acquisition of people at the top of
+
+79
+00:05:31,880 --> 00:05:36,120
+the funnel to get to the bottom, even if that means you don't turn a net profit and
+
+80
+00:05:36,120 --> 00:05:40,080
+still be a great business because as soon as you stop burning money to acquire more stuff
+
+81
+00:05:40,080 --> 00:05:42,880
+at the top, but you make a lot of money at the bottom, right?
+
+82
+00:05:42,880 --> 00:05:47,680
+And so in open source, when we talk about open source business models, what we really
+
+83
+00:05:47,680 --> 00:05:52,120
+are talking about is how do I create a channel at the top of the funnel?
+
+84
+00:05:52,120 --> 00:05:56,160
+So people come in in multiple different ways, and we talk about those as channels.
+
+85
+00:05:56,160 --> 00:06:00,360
+So one channel will be, I'm an open source user of your software.
+
+86
+00:06:00,360 --> 00:06:03,920
+I download MongoDB, I download Redis, I used it.
+
+87
+00:06:03,920 --> 00:06:08,760
+Therefore, I'm in the open source channel to the bottom of the funnel, right?
+
+88
+00:06:08,760 --> 00:06:15,440
+Another channel would be my boss, the CIO, heard about Redis and CIO magazine.
+
+89
+00:06:15,440 --> 00:06:18,440
+Tells me, you should use Redis, right?
+
+90
+00:06:18,440 --> 00:06:21,920
+Now, I'm in a very different channel than the open source channel, right?
+
+91
+00:06:21,920 --> 00:06:28,120
+Now, I'm in a enterprise, or I get a cold email from a rep that says, have you heard
+
+92
+00:06:28,120 --> 00:06:30,280
+about Redis Labs, right?
+
+93
+00:06:30,280 --> 00:06:31,840
+That's a different channel, right?
+
+94
+00:06:31,840 --> 00:06:34,600
+So we have all these different channels, there's a partner channel where like maybe
+
+95
+00:06:34,600 --> 00:06:39,600
+the guy at Pimitle who was consulting on your Cloud Foundry deployment tells you that you
+
+96
+00:06:39,600 --> 00:06:40,600
+should use Redis.
+
+97
+00:06:40,600 --> 00:06:42,520
+That's a partner channel, right?
+
+98
+00:06:42,520 --> 00:06:46,120
+So like we have all these different channels that people come into our businesses through,
+
+99
+00:06:46,120 --> 00:06:47,120
+right?
+
+100
+00:06:47,120 --> 00:06:48,120
+This is true of every business.
+
+101
+00:06:48,120 --> 00:06:51,640
+Again, it's not unique to open source, but that open source channel is interesting
+
+102
+00:06:51,640 --> 00:06:55,320
+because it's humongous, right?
+
+103
+00:06:55,320 --> 00:07:01,520
+If you're a successful open source project, that channel is full of people, right?
+
+104
+00:07:01,520 --> 00:07:05,160
+Because lots of people are using this software, that's why it's successful open source
+
+105
+00:07:05,160 --> 00:07:06,400
+software.
+
+106
+00:07:06,400 --> 00:07:09,720
+So it kind of dwarfs the others in pure numbers, right?
+
+107
+00:07:09,720 --> 00:07:13,720
+Just the sheer magnitude of what's possible is really high.
+
+108
+00:07:13,720 --> 00:07:20,160
+And so when we're designing and thinking about our businesses, what tends to happen is
+
+109
+00:07:20,160 --> 00:07:25,360
+we think about the revenue that that channel produces as belonging to us, right?
+
+110
+00:07:25,360 --> 00:07:30,480
+If I'm a chef people, I look at that channel and I go, any chef user belongs to me.
+
+111
+00:07:30,480 --> 00:07:35,360
+And if there's competition in that channel, I don't like it because it means somebody else
+
+112
+00:07:35,360 --> 00:07:41,160
+can compete with me to monetize the people that are at the top of the funnel, right?
+
+113
+00:07:41,160 --> 00:07:49,640
+So a good example here is if I'm MongoDB and I sell Atlas, which is their hosted SaaS
+
+114
+00:07:49,640 --> 00:07:58,040
+product for MongoDB and Amazon and Microsoft are both going to offer MongoDB as a service,
+
+115
+00:07:58,040 --> 00:08:02,800
+that competes with me to monetize the bottom of the MongoDB funnel, right?
+
+116
+00:08:02,800 --> 00:08:06,280
+I'm MongoDB, make this investment at the top of the channel.
+
+117
+00:08:06,280 --> 00:08:11,000
+I expect to return to the bottom and now they're competing with me in the bottom.
+
+118
+00:08:11,000 --> 00:08:18,840
+And this comes back to how do you feel about that competition is the question because in
+
+119
+00:08:18,840 --> 00:08:22,280
+one point of view, you're like, well, competition sucks, right?
+
+120
+00:08:22,280 --> 00:08:25,240
+I'm the one who put all the money into building it.
+
+121
+00:08:25,240 --> 00:08:28,600
+I'm the one who did all of this stuff and so you look at this thing and you're like,
+
+122
+00:08:28,600 --> 00:08:31,800
+I deserve the money at the bottom of this channel.
+
+123
+00:08:31,800 --> 00:08:34,120
+Well, flip that over though.
+
+124
+00:08:34,120 --> 00:08:38,840
+The value of the channel is that it's massively huge, that it's adoption.
+
+125
+00:08:38,840 --> 00:08:44,840
+The size of the number of users is why the open source channel is valuable in the first place.
+
+126
+00:08:44,840 --> 00:08:51,240
+If Amazon or Microsoft create services that sell what I sell,
+
+127
+00:08:52,040 --> 00:08:54,680
+what's the impact at the top of the channel, right?
+
+128
+00:08:54,680 --> 00:09:00,600
+What's that do to cement MongoDB as an excellent choice for users at the top of the channel,
+
+129
+00:09:00,600 --> 00:09:01,720
+right?
+
+130
+00:09:01,720 --> 00:09:04,040
+The answer is it jacks it up, right?
+
+131
+00:09:04,040 --> 00:09:07,480
+Like Amazon has a chef service.
+
+132
+00:09:07,480 --> 00:09:09,640
+They sell it for money, they do prevention, right?
+
+133
+00:09:09,640 --> 00:09:13,480
+So they sell my what used to be my proprietary software, but now my distribution.
+
+134
+00:09:13,480 --> 00:09:17,800
+You can buy it from Amazon as a service directly from Amazon we do rub sharing together.
+
+135
+00:09:17,800 --> 00:09:19,960
+Amazon runs and maintains that service.
+
+136
+00:09:19,960 --> 00:09:25,080
+I promise you that my channel got bigger, I open source channel got bigger when they did that,
+
+137
+00:09:25,080 --> 00:09:25,720
+right?
+
+138
+00:09:25,720 --> 00:09:30,680
+The fact that that button exists meant more people were willing to use chef than they were before,
+
+139
+00:09:30,680 --> 00:09:30,920
+right?
+
+140
+00:09:30,920 --> 00:09:31,880
+The pie got bigger.
+
+141
+00:09:32,360 --> 00:09:38,280
+So what's happening when the redis and the mongos of the world look at that problem is they decide
+
+142
+00:09:38,920 --> 00:09:43,080
+that the top of the funnel doesn't get bigger or that they don't care
+
+143
+00:09:43,080 --> 00:09:47,640
+about it getting bigger and instead they care about the extraction at the bottom of the funnel,
+
+144
+00:09:47,640 --> 00:09:47,960
+right?
+
+145
+00:09:47,960 --> 00:09:49,160
+So they're nervous about it.
+
+146
+00:09:49,160 --> 00:09:51,320
+They're like, oh, Amazon will out compete me.
+
+147
+00:09:51,320 --> 00:09:57,240
+They'll sell it for less, they'll be doing better features, but this, in my point of view,
+
+148
+00:09:57,240 --> 00:10:00,040
+is completely bonkers, right?
+
+149
+00:10:00,040 --> 00:10:04,520
+Amazon's never going to invest more in MongoDB than MongoDB.
+
+150
+00:10:04,520 --> 00:10:07,000
+It's insane on its face, right?
+
+151
+00:10:07,000 --> 00:10:14,440
+And the idea that that competition exists and it limits their ability to monetize is also,
+
+152
+00:10:14,440 --> 00:10:16,040
+also to me, feels false.
+
+153
+00:10:16,040 --> 00:10:17,720
+A good example is elastic.
+
+154
+00:10:17,720 --> 00:10:23,480
+Amazon's had an elastic service running for as long as elastic has been monetizable basically.
+
+155
+00:10:23,480 --> 00:10:27,880
+An elastic went public that whole time with Amazon as a competitor.
+
+156
+00:10:27,880 --> 00:10:29,000
+But you know what?
+
+157
+00:10:29,000 --> 00:10:30,280
+I ran elastic search.
+
+158
+00:10:31,000 --> 00:10:33,560
+I used it as a component in my product.
+
+159
+00:10:33,560 --> 00:10:37,480
+One of the reasons is that it was a dominant standard, how did I know?
+
+160
+00:10:37,480 --> 00:10:41,320
+Well, everybody offered elastic as a service, right?
+
+161
+00:10:41,320 --> 00:10:43,160
+It was the effective thing.
+
+162
+00:10:43,160 --> 00:10:45,640
+So that choice was easy, so I wound up being the channel.
+
+163
+00:10:46,280 --> 00:10:48,840
+So from a business point of view, they're making these decisions because
+
+164
+00:10:49,640 --> 00:10:54,840
+they believe that that's what's best for the extraction of capital, of revenue at the bottom
+
+165
+00:10:54,840 --> 00:10:59,240
+of the channel, and they're doing it at the expense of the spread at the top of the channel.
+
+166
+00:10:59,240 --> 00:11:03,240
+In your case, you've got a rev share with Amazon.
+
+167
+00:11:03,240 --> 00:11:06,680
+Is that the case with Mongo or with Redis or was that unique to Chef?
+
+168
+00:11:06,680 --> 00:11:09,480
+And would that change your outlook at all if that rev share was gone?
+
+169
+00:11:09,480 --> 00:11:10,600
+It's not the same.
+
+170
+00:11:10,600 --> 00:11:11,400
+I don't know.
+
+171
+00:11:11,400 --> 00:11:15,320
+I have certainly not privy to whatever negotiations they may have had, right?
+
+172
+00:11:15,320 --> 00:11:16,680
+I know the ones I've had.
+
+173
+00:11:16,680 --> 00:11:20,600
+You know, one of the things that Amazon or any partner or anybody who's going to run your
+
+174
+00:11:20,600 --> 00:11:24,520
+code as a service needs is the assurance that they'll always be able to provide that service to
+
+175
+00:11:24,520 --> 00:11:27,000
+their customers, right?
+
+176
+00:11:27,000 --> 00:11:30,680
+And, you know what's hard to do that with proprietary software?
+
+177
+00:11:30,680 --> 00:11:35,160
+Because I have no, my only hedge is the business arrangement.
+
+178
+00:11:35,160 --> 00:11:35,880
+Do you see what I mean?
+
+179
+00:11:35,880 --> 00:11:40,840
+Like, I can sign a contract that says so, but if I change the terms on my proprietary software,
+
+180
+00:11:40,840 --> 00:11:44,600
+or I build a new SKU, well, can I still run that thing as a service?
+
+181
+00:11:44,600 --> 00:11:46,360
+Or if we vibrate at it, like what's the deal?
+
+182
+00:11:46,360 --> 00:11:48,200
+So the mechanism there is really complicated.
+
+183
+00:11:48,200 --> 00:11:51,880
+And so one of the reasons that that rev share exists is because so much of those
+
+184
+00:11:51,880 --> 00:11:55,240
+assurances about what's in the open was in the open, right?
+
+185
+00:11:55,240 --> 00:11:56,680
+Even more so now.
+
+186
+00:11:56,680 --> 00:12:00,280
+That doesn't mean that that's always what Amazon will do, or even what they should,
+
+187
+00:12:01,000 --> 00:12:02,920
+but that's how it worked for us.
+
+188
+00:12:02,920 --> 00:12:06,360
+If it didn't exist, it wouldn't really change my point of view.
+
+189
+00:12:06,360 --> 00:12:11,480
+Because if the question is, can I, as the primary producer of the product,
+
+190
+00:12:12,120 --> 00:12:16,280
+an owner of the brand, and the reason that people attached it as things,
+
+191
+00:12:16,280 --> 00:12:21,640
+outcompete someone who is essentially selling a generic version of what I sell,
+
+192
+00:12:21,640 --> 00:12:25,960
+if I can't outcompete that person, shame on me.
+
+193
+00:12:25,960 --> 00:12:29,640
+You really can't convince me, you really can't convince a customer
+
+194
+00:12:29,640 --> 00:12:34,440
+that the best person to service their MongoDB as MongoDB is, man, if you can't,
+
+195
+00:12:34,440 --> 00:12:39,720
+like there's something fundamentally broken in the value proposition here, right?
+
+196
+00:12:39,720 --> 00:12:41,560
+And I think the truth is that they can.
+
+197
+00:12:41,560 --> 00:12:45,160
+If you look at Mongo's performance, if you look at Atlas' sales numbers,
+
+198
+00:12:45,160 --> 00:12:46,280
+it continues to go up.
+
+199
+00:12:46,280 --> 00:12:49,560
+It was going up before they changed the license, right?
+
+200
+00:12:49,560 --> 00:12:51,960
+And the reason is, it's a good product.
+
+201
+00:12:51,960 --> 00:12:54,920
+And it's a better product than the one that you receive
+
+202
+00:12:54,920 --> 00:12:58,520
+if you just turn on document DB on Azure.
+
+203
+00:12:59,080 --> 00:13:02,600
+Because it's kind of bare bones when you turn it on in Azure, right?
+
+204
+00:13:02,600 --> 00:13:06,760
+And the Atlas version has all kinds of stuff that the other one doesn't have.
+
+205
+00:13:06,760 --> 00:13:10,120
+The idea that that competition in open source,
+
+206
+00:13:10,120 --> 00:13:13,320
+where the reason you're here is because you have this massive channel,
+
+207
+00:13:13,320 --> 00:13:17,000
+it doesn't make much business sense to me that that's the conclusion we would come to.
+
+208
+00:13:17,000 --> 00:13:20,280
+I understand how you get there, but it doesn't make much sense.
+
+209
+00:13:20,280 --> 00:13:23,960
+Isn't our disruptive products, though, not necessarily better?
+
+210
+00:13:23,960 --> 00:13:26,040
+They're usually actually worse, but they're good enough.
+
+211
+00:13:26,040 --> 00:13:27,640
+And the cost is disruptive.
+
+212
+00:13:27,640 --> 00:13:30,280
+And so in the case of an AWS version of Mongo,
+
+213
+00:13:30,280 --> 00:13:33,320
+yeah, it's not going to be as good or as maybe well supported
+
+214
+00:13:33,320 --> 00:13:35,720
+or have as many features as Mongo's version of Mongo,
+
+215
+00:13:35,720 --> 00:13:39,800
+but it's satisfactory and it's way cheaper.
+
+216
+00:13:39,800 --> 00:13:41,320
+So it's disruptively cheap.
+
+217
+00:13:41,320 --> 00:13:43,880
+And then you add to the fact that there's no,
+
+218
+00:13:43,880 --> 00:13:47,000
+there's no R&D, there's no development costs from Amazon's side.
+
+219
+00:13:47,000 --> 00:13:49,080
+So you're not competing with them on features.
+
+220
+00:13:49,800 --> 00:13:53,240
+They're just free writing all the features that you're building.
+
+221
+00:13:53,240 --> 00:13:54,680
+Well, but here's the thing.
+
+222
+00:13:54,680 --> 00:13:57,800
+So this is where we come back to the funnel, right?
+
+223
+00:13:57,800 --> 00:13:59,640
+So like, now we're back to the business.
+
+224
+00:13:59,640 --> 00:14:03,400
+So like, sure, maybe Amazon, but this is why it's good business for Amazon
+
+225
+00:14:03,400 --> 00:14:06,360
+to launch your stuff as a service instead of just compete with your directly.
+
+226
+00:14:06,360 --> 00:14:10,120
+So like, you've brilliantly elucidated why they would want to launch a Mongo service
+
+227
+00:14:10,120 --> 00:14:11,160
+in the first place, right?
+
+228
+00:14:11,160 --> 00:14:15,480
+But as soon as they do that, if the top of the funnel was fixed,
+
+229
+00:14:15,480 --> 00:14:19,880
+if that created no more interest in your product than it did before,
+
+230
+00:14:19,880 --> 00:14:22,280
+then you'd be right, but it doesn't.
+
+231
+00:14:22,280 --> 00:14:26,360
+Instead, it turns out that the single largest pool of software developers on the planet
+
+232
+00:14:26,360 --> 00:14:30,920
+are the ones that use Amazon and AWS or Azure or Google.
+
+233
+00:14:30,920 --> 00:14:33,320
+How many of those developers are using one of those platforms?
+
+234
+00:14:33,320 --> 00:14:36,680
+And if your stuff is on all three of those platforms and it's not on the others,
+
+235
+00:14:36,680 --> 00:14:39,480
+how many eyeballs do you get that cockroach does it?
+
+236
+00:14:39,480 --> 00:14:43,320
+The answer is our ton of eyeballs, so many eyeballs.
+
+237
+00:14:43,320 --> 00:14:47,960
+And so the size of that funnel, your possible monetization gets bigger,
+
+238
+00:14:47,960 --> 00:14:51,800
+hugely bigger than it was before.
+
+239
+00:14:51,800 --> 00:14:54,520
+And in that moment, your ability to capture that revenue,
+
+240
+00:14:54,520 --> 00:14:59,720
+every single one of those cut rate document DB users is a potential lead
+
+241
+00:14:59,720 --> 00:15:02,120
+that's already using your product.
+
+242
+00:15:02,120 --> 00:15:04,120
+So all you have to do is go find them and be like,
+
+243
+00:15:04,120 --> 00:15:07,720
+yo, did you see how much better our console is,
+
+244
+00:15:07,720 --> 00:15:11,960
+how much better our operation stuff is, how you can get on a Zoom with the dude
+
+245
+00:15:11,960 --> 00:15:14,520
+that wrote that indexing feature when it's broken,
+
+246
+00:15:14,520 --> 00:15:16,520
+I dare you to get that out of Amazon.
+
+247
+00:15:16,520 --> 00:15:18,680
+And next thing you know, city bank is like, you know,
+
+248
+00:15:18,680 --> 00:15:20,360
+Amazon looks pretty good.
+
+249
+00:15:20,360 --> 00:15:22,920
+I think those kinds of ideas, those sometimes are so
+
+250
+00:15:23,720 --> 00:15:27,480
+seem so logical, but yet not everybody thinks like that, you know.
+
+251
+00:15:27,480 --> 00:15:30,760
+So I think this is a great idea of how could you leverage the fact that
+
+252
+00:15:30,760 --> 00:15:35,000
+these platforms are so massive that they actually become your marketing channel for you.
+
+253
+00:15:35,000 --> 00:15:37,000
+They are your marketing channel for you.
+
+254
+00:15:37,000 --> 00:15:41,320
+And the only thing you have to give up is that they're also going to monetize
+
+255
+00:15:41,320 --> 00:15:45,320
+some number of your customers back to open sources pump rockness, right?
+
+256
+00:15:45,320 --> 00:15:51,160
+Like, there's a, there's a like, that's the man vibe where like,
+
+257
+00:15:51,160 --> 00:15:53,880
+when you're saying that Amazon's a net positive for your business,
+
+258
+00:15:53,880 --> 00:15:55,640
+everybody's like, but they're the man.
+
+259
+00:15:56,760 --> 00:15:59,400
+And Amazon's going to destroy elastic search.
+
+260
+00:15:59,400 --> 00:16:05,080
+And you're like, do the elastic search is a worth $1.5 billion with a B.
+
+261
+00:16:05,080 --> 00:16:07,880
+And they're getting like that commercial where the guys like,
+
+262
+00:16:07,880 --> 00:16:09,000
+sir, you are the man.
+
+263
+00:16:09,000 --> 00:16:10,200
+Yeah, that commercial.
+
+264
+00:16:10,200 --> 00:16:12,520
+Like, exactly are we protecting here?
+
+265
+00:16:12,520 --> 00:16:15,320
+Because last time I checked, they were public and killing it.
+
+266
+00:16:25,560 --> 00:16:27,000
+Next up is Heather Meeker.
+
+267
+00:16:27,000 --> 00:16:32,600
+Heather is a well respected open source lawyer and a specialist in open source software
+
+268
+00:16:32,600 --> 00:16:36,120
+licensing and strategy, she wrote the book open source for business
+
+269
+00:16:36,120 --> 00:16:38,840
+and it serves as a guide to open source software licensing.
+
+270
+00:16:38,840 --> 00:16:41,880
+We're talking about Heather because she's a lawyer who wrote the license.
+
+271
+00:16:41,880 --> 00:16:46,040
+The SSPO license is a result of her work with MongoDB.
+
+272
+00:16:46,040 --> 00:16:50,200
+And we wanted to understand the design and the intention of the license.
+
+273
+00:16:50,200 --> 00:16:51,160
+All right, here we go with Heather.
+
+274
+00:16:52,440 --> 00:16:57,320
+Heather, let's open up with the SSPO you were the person behind writing it.
+
+275
+00:16:57,320 --> 00:16:57,960
+Is that correct?
+
+276
+00:16:57,960 --> 00:17:03,720
+Yes, I helped MongoDB draft the license with, of course,
+
+277
+00:17:03,720 --> 00:17:09,560
+the help of Mongo legal counsel and their business team.
+
+278
+00:17:09,560 --> 00:17:13,080
+I think it's fair to say that I led the drafting of it.
+
+279
+00:17:13,080 --> 00:17:16,840
+Gotcha. And full title of it is the service side public license?
+
+280
+00:17:16,840 --> 00:17:18,040
+Yes, that's right.
+
+281
+00:17:18,040 --> 00:17:20,760
+Take us back to, I suppose, the early days of drafting it.
+
+282
+00:17:20,760 --> 00:17:22,120
+What's it intended to do?
+
+283
+00:17:22,120 --> 00:17:23,560
+What's the goal of this license?
+
+284
+00:17:23,560 --> 00:17:29,560
+SSPO was drafted in order to meet a need in a particular way.
+
+285
+00:17:29,560 --> 00:17:31,240
+So explain what I mean by that.
+
+286
+00:17:31,960 --> 00:17:38,200
+At the time, and this would have been late 2018 to early 2019,
+
+287
+00:17:38,920 --> 00:17:43,480
+many companies that were providing software under open source licenses
+
+288
+00:17:44,120 --> 00:17:50,120
+were very concerned about the use of the software by cloud services providers.
+
+289
+00:17:50,120 --> 00:17:55,560
+And what they were concerned about was that the cloud service providers were using the software
+
+290
+00:17:55,560 --> 00:18:02,760
+not contributing back and not participating in the development of the software.
+
+291
+00:18:02,760 --> 00:18:07,080
+So at that time, there were actually quite a few companies,
+
+292
+00:18:07,080 --> 00:18:10,440
+and most of these, by the way, were companies in what I would call the
+
+293
+00:18:11,240 --> 00:18:14,840
+flat form software space or middleware software space.
+
+294
+00:18:15,640 --> 00:18:19,560
+And they were trying to figure out what to do about that.
+
+295
+00:18:19,560 --> 00:18:22,280
+They basically went down two different routes.
+
+296
+00:18:22,280 --> 00:18:28,600
+The first route was the source available route in what we call an open core business model.
+
+297
+00:18:28,600 --> 00:18:35,000
+And that's not what SSPO is, but that's where you have a core of open source software
+
+298
+00:18:35,000 --> 00:18:40,120
+usually under say Apache, and then you reserve some of the upsell elements for
+
+299
+00:18:41,240 --> 00:18:44,600
+under proprietary or source available licenses.
+
+300
+00:18:44,600 --> 00:18:47,000
+That's the route that most companies went down.
+
+301
+00:18:47,000 --> 00:18:52,600
+Mongo, on the other hand, wanted to see if they could create a license that was an open source
+
+302
+00:18:52,600 --> 00:18:57,880
+license, but that managed this issue, and that's how the SSPO came about.
+
+303
+00:18:58,680 --> 00:19:05,960
+So they drafted the license, submitted it to open source initiative for approval as an open source
+
+304
+00:19:05,960 --> 00:19:12,520
+license, and eventually it was withdrawn after quite a bit of comment without a particular
+
+305
+00:19:12,520 --> 00:19:18,600
+ruling from OSI on whether it was appropriate for approval as an open source license.
+
+306
+00:19:19,320 --> 00:19:21,240
+What happened in that proceeding?
+
+307
+00:19:22,680 --> 00:19:25,560
+Why wouldn't, like, what were the deciding factors?
+
+308
+00:19:25,560 --> 00:19:30,440
+I guess they didn't reject it, but it was just like being debated to a certain degree,
+
+309
+00:19:30,440 --> 00:19:35,000
+and then it was drawn eventually, I assume it was withdrawn because it was not going anywhere,
+
+310
+00:19:35,640 --> 00:19:37,160
+or was there a different reason for withdrawing it?
+
+311
+00:19:37,160 --> 00:19:46,680
+It was a long and fraught debate, and the debate had to do with a number of concerns.
+
+312
+00:19:47,720 --> 00:19:53,560
+I would encourage anybody who's interested to go and read the archives of what's called
+
+313
+00:19:53,560 --> 00:20:02,440
+license review or license discuss, but I'll try to summarize, understanding that there were a
+
+314
+00:20:02,440 --> 00:20:11,560
+lot of comments, and I can't summarize them all. The first was technical commentary about
+
+315
+00:20:11,560 --> 00:20:17,400
+whether the license met the open source definition. So there is a definition of open source,
+
+316
+00:20:17,400 --> 00:20:24,600
+there's also a free software definition. One of the main tenets of that definition is that
+
+317
+00:20:24,600 --> 00:20:29,240
+the license can't have any license restrictions, so that would be source available.
+
+318
+00:20:29,240 --> 00:20:35,800
+If you say you can't use the software for this purpose, it also says that it can't discriminate
+
+319
+00:20:35,800 --> 00:20:41,800
+against users or technology, context, and so forth. I'm paraphrasing, of course.
+
+320
+00:20:41,800 --> 00:20:47,800
+So there were those aspects, and there were some comments about that aspect of the license.
+
+321
+00:20:47,800 --> 00:20:55,720
+There were also a lot of comments about who had drafted it, the process by which it was drafted,
+
+322
+00:20:55,720 --> 00:21:03,880
+and what Mongo's intent was in creating the license. So those were like meta comments,
+
+323
+00:21:03,880 --> 00:21:10,360
+not about the license itself, but about the context, and so all of those things were being discussed,
+
+324
+00:21:10,360 --> 00:21:15,400
+and if you've ever been on one of these discussion groups, you know that they get discussed
+
+325
+00:21:15,400 --> 00:21:23,560
+in a non-sequential format, and it can be very confusing to follow, but I'd say those were the
+
+326
+00:21:23,560 --> 00:21:31,400
+main things. Okay, and so do you think that, I mean, I don't know if bias is the author of the
+
+327
+00:21:31,400 --> 00:21:36,760
+SSPL? Do you believe that the SSPL represents, I guess, even the spirit of open source, if it's not
+
+328
+00:21:36,760 --> 00:21:43,320
+officially an open source license, or do you think it's something different? Well, we drafted it to
+
+329
+00:21:43,320 --> 00:21:50,040
+fit the open source definition, and as a lawyer, you know, you have to have concrete things
+
+330
+00:21:50,040 --> 00:21:56,120
+to go on, and the open source definition is what we had. I think the discussion brought out that
+
+331
+00:21:56,120 --> 00:22:01,720
+people felt that there was something beyond meeting the open source definition that needed to be
+
+332
+00:22:01,720 --> 00:22:08,040
+satisfied, and there was a great deal of debate about that. So we looked at the open source definition,
+
+333
+00:22:08,040 --> 00:22:15,240
+we definitely, you know, avoided license restrictions, we avoided things that were
+
+334
+00:22:15,240 --> 00:22:23,080
+discriminatory according to the requirements of the OSD, but all of the meta issues were things
+
+335
+00:22:23,080 --> 00:22:29,800
+that really kind of couldn't be addressed by the draft itself. There is some discrimination
+
+336
+00:22:29,800 --> 00:22:35,880
+built-in though, right? Or how does it actually, how does it work in order to stop that particular
+
+337
+00:22:37,240 --> 00:22:41,560
+problem that there was right address? So does that discriminate in the use?
+
+338
+00:22:41,560 --> 00:22:46,280
+I know we get into legalies here, but you're good at this, so help me understand.
+
+339
+00:22:47,400 --> 00:22:53,720
+I would say not discriminatory, because in a way, all copy left licenses apply
+
+340
+00:22:53,720 --> 00:22:59,960
+different conditions when you do different things. So if you use discriminatory in that way,
+
+341
+00:22:59,960 --> 00:23:08,200
+then GPL2 is discriminatory, because it only applies certain conditions to redistributors.
+
+342
+00:23:08,200 --> 00:23:12,280
+So that is actually fair game in copy left licensing. Okay.
+
+343
+00:23:12,280 --> 00:23:20,840
+SSPL applied specific conditions to use of the software. I'm paraphrasing now, but as a software,
+
+344
+00:23:21,640 --> 00:23:26,680
+software is a service to provide the same functionality of the software. And so yes,
+
+345
+00:23:26,680 --> 00:23:32,280
+there were conditions that were imposed in those situations that weren't imposed otherwise,
+
+346
+00:23:32,280 --> 00:23:39,800
+but that I think for most people isn't the meaning of discriminatory according to the OSD.
+
+347
+00:23:39,800 --> 00:23:46,600
+Discriminatory would be more like you can only use this in a particular field of use,
+
+348
+00:23:46,600 --> 00:23:53,160
+like you can use it in medical devices, but you can't use it in nuclear weapons or something like that.
+
+349
+00:23:54,360 --> 00:23:56,120
+You can use it for good, but not for evil.
+
+350
+00:23:56,120 --> 00:24:03,960
+Well, it's interesting that you say that because there is now a new licensing
+
+351
+00:24:05,320 --> 00:24:12,120
+movement, I guess called that ethical licensing movement, that actually does impose conditions
+
+352
+00:24:12,120 --> 00:24:19,160
+based on ethical concerns and moral concerns. And those are clearly not open source licenses,
+
+353
+00:24:19,160 --> 00:24:25,800
+because they actually do impose license restrictions. In other words, you can't use the
+
+354
+00:24:25,800 --> 00:24:30,680
+software for this particular purpose. I heard about this too, where I believe it was in China,
+
+355
+00:24:30,680 --> 00:24:36,040
+there was a specific license about companies that didn't adhere to work ethics where I think it
+
+356
+00:24:36,040 --> 00:24:43,160
+was like a 999 or something like that. The anti-996 license, that was actually very interesting,
+
+357
+00:24:43,160 --> 00:24:49,960
+if you'll permit me to make a comment about it. It was, first of all, a very well drafted license,
+
+358
+00:24:49,960 --> 00:24:57,880
+so it was professionally done. It did address labor conditions, and again, I'm paraphrasing,
+
+359
+00:24:57,880 --> 00:25:04,600
+but the license says you can't use this software if you are violating the international labor
+
+360
+00:25:04,600 --> 00:25:11,240
+standards. And it was intended to raise consciousness about labor practices in China.
+
+361
+00:25:12,200 --> 00:25:17,640
+But what was really interesting about that is that the license was released on GitHub,
+
+362
+00:25:17,640 --> 00:25:23,240
+and by the way, I think it may have been more a thought experiment than anything else,
+
+363
+00:25:23,240 --> 00:25:31,960
+but it then caused that GitHub repository to become a vehicle for people to discuss the issue.
+
+364
+00:25:31,960 --> 00:25:40,920
+So it became almost like a social networking initiative to raise consciousness about the issue,
+
+365
+00:25:40,920 --> 00:25:48,040
+rather than specifically to develop a licensed document. So I thought that was a very interesting
+
+366
+00:25:48,040 --> 00:25:54,520
+phenomenon from the point of view of what happened around the putting the license in GitHub
+
+367
+00:25:55,320 --> 00:25:57,880
+and around the development of the license.
+
+368
+00:25:57,880 --> 00:26:09,880
+This episode is brought to you by our friends at retool. Retool helps you build internal tools
+
+369
+00:26:09,880 --> 00:26:15,160
+fast and easy. From startups to Fortune 500s, the world's best teams use retool to power their
+
+370
+00:26:15,160 --> 00:26:19,080
+internal apps, assemble your app in just a few minutes by dragging and dropping from pre-built
+
+371
+00:26:19,080 --> 00:26:25,400
+components, connect to most databases or anything with the rest, GraphQL or GRPC API. Retool
+
+372
+00:26:25,400 --> 00:26:30,200
+empowers you to work with all your data sources seamlessly in one single app. Retool is highly
+
+373
+00:26:30,200 --> 00:26:33,960
+hackable so you're never limited by what's available out of the box. If you can write it in
+
+374
+00:26:33,960 --> 00:26:39,640
+JavaScript and an API, you can build it in retool. You can use their cloud service or host it on
+
+375
+00:26:39,640 --> 00:27:00,280
+print for yourself, learn more and try free at retool.com slash change log. It's interesting how
+
+376
+00:27:01,000 --> 00:27:08,920
+you know there's so many usages of licenses and you'd mentioned the OSI approval process and how
+
+377
+00:27:08,920 --> 00:27:15,080
+it was contextual in terms of their Mongo's intent of the license change and the intent of the
+
+378
+00:27:15,080 --> 00:27:22,680
+SSPO license in general and you also mentioned the OSD and its criteria in your blog post
+
+379
+00:27:23,720 --> 00:27:28,200
+on the cost community you'd mentioned, how many of the legacy license in the OSI
+
+380
+00:27:28,200 --> 00:27:32,120
+approved long ago would probably not be approved today and then you'd mentioned that
+
+381
+00:27:32,120 --> 00:27:39,320
+the criteria for the approval has changed but the OSD has not so it seems like there's like
+
+382
+00:27:39,320 --> 00:27:44,120
+a lot of moving targets in terms of getting approved by the OSI and Jared mentioned like you know
+
+383
+00:27:44,120 --> 00:27:49,320
+in terms of this isn't an OSI approved license do you feel it is open source. It's kind of an
+
+384
+00:27:49,320 --> 00:27:53,160
+interesting perspective just that the fact that there's this OSD that's been drafted I think the
+
+385
+00:27:53,160 --> 00:28:01,080
+last time it changed was 2007 if I recall correctly. It was a long time ago. It basically
+
+386
+00:28:01,080 --> 00:28:08,840
+you know hasn't changed in the time that I can remember looking at it and but I think what's
+
+387
+00:28:08,840 --> 00:28:15,160
+interesting about that is that what OSI is is doing is trying to create community consensus
+
+388
+00:28:15,960 --> 00:28:22,920
+and isn't wedded to this written definition by the way I don't I say that because that's what
+
+389
+00:28:22,920 --> 00:28:30,120
+they say it's approval of a license does not merely require it to meet the open source definition
+
+390
+00:28:30,120 --> 00:28:37,720
+so it does rate it as an interesting question about the clarity of the criteria and the process
+
+391
+00:28:37,720 --> 00:28:45,160
+but you know this is a community process so those are always they are living breathing things
+
+392
+00:28:45,160 --> 00:28:51,320
+and they get developed as they go and people are always pushing for transparency but it can
+
+393
+00:28:51,320 --> 00:28:56,520
+never be you know perfect. The fact that this OSD document hasn't changed in a while though
+
+394
+00:28:56,520 --> 00:29:01,000
+is that a good thing or a bad thing because you might say it's a bad thing because it doesn't
+
+395
+00:29:01,000 --> 00:29:06,280
+reflect the way the modern software is developed and deployed into consumers hands and then you
+
+396
+00:29:06,280 --> 00:29:09,640
+might say it's a good thing because it's so strong it doesn't need to change the definition
+
+397
+00:29:09,640 --> 00:29:14,920
+is so strong that you know it doesn't have to change what do you think about whether it's
+
+398
+00:29:14,920 --> 00:29:17,640
+the fact that hasn't changed and so long it's a good thing or a bad thing.
+
+399
+00:29:18,520 --> 00:29:25,400
+Well I actually agree with you it's kind of a good thing and a bad thing it has worked pretty
+
+400
+00:29:25,400 --> 00:29:32,920
+well over the years and it's been remarkably robust over the years. Maybe it's time to revisit it
+
+401
+00:29:32,920 --> 00:29:39,080
+but that would also be a very long process and possibly very controversial. There are other
+
+402
+00:29:39,080 --> 00:29:45,480
+definitions by the way there's the free software definition and there's a Debian software I think
+
+403
+00:29:45,480 --> 00:29:51,480
+it's called the software contract sorry if I'm getting that wrong but those are much shorter
+
+404
+00:29:51,480 --> 00:29:59,320
+and less complicated so I think if it were revised it might there might be some interesting
+
+405
+00:29:59,320 --> 00:30:06,600
+possibilities to harmonize those definitions. I would say that whether the definition changes
+
+406
+00:30:06,600 --> 00:30:12,600
+or not is one question I do think that the transparency of the criteria for approval is very
+
+407
+00:30:12,600 --> 00:30:17,480
+important to the community. What's at stake for these companies and organizations?
+
+408
+00:30:17,480 --> 00:30:24,840
+Maybe they pick SSPL whether or not it's an improved license or not like what do they win or lose
+
+409
+00:30:25,720 --> 00:30:30,920
+based on that? Is it marketing value of the term? Is it goodwill? What's at stake?
+
+410
+00:30:31,640 --> 00:30:40,360
+SSPL is used as part of a dual licensing model and that is something that has been around for a long
+
+411
+00:30:40,360 --> 00:30:48,280
+time but it's not as popular as it once was so it was really pioneered by MySQL and so what they
+
+412
+00:30:48,280 --> 00:30:55,320
+did was they said here's our software it's under GPL actually they used a variant of GPL and if you
+
+413
+00:30:55,320 --> 00:31:03,160
+don't want to abide by the GPL requirements you can negotiate with us for a commercial license
+
+414
+00:31:03,160 --> 00:31:10,280
+and that's a process that sometimes called selling exceptions. So the strong copy left licenses
+
+415
+00:31:10,280 --> 00:31:19,560
+like GPL and then later AgPL and then finally SSPL were all used in other contexts as well but
+
+416
+00:31:19,560 --> 00:31:26,840
+as part of these dual licensing initiatives. The reason that companies adopted them in a dual
+
+417
+00:31:26,840 --> 00:31:33,400
+licensing strategy is that they were intending that people who are using the software commercially
+
+418
+00:31:33,400 --> 00:31:39,800
+would probably have to come negotiate for a license and what happened over time was that the MySQL
+
+419
+00:31:39,800 --> 00:31:47,000
+model which worked pretty well began to break when software moved up to the cloud because the
+
+420
+00:31:47,000 --> 00:31:55,160
+requirements of GPL only kicked in on redistribution and that wasn't happening anymore because of
+
+421
+00:31:55,160 --> 00:32:04,040
+cloud deployment. So then companies that were doing dual licensing models moved to AgPL when it was
+
+422
+00:32:04,040 --> 00:32:13,240
+released and I think that was 2007 and SSPL is I think you know a kind of a logical extension
+
+423
+00:32:13,240 --> 00:32:18,920
+from that. So that's what they're trying to do they're trying to allow people to use the software
+
+424
+00:32:18,920 --> 00:32:30,280
+for certain you know in a say to test it out to use it on a small scale to use it to do certain
+
+425
+00:32:30,280 --> 00:32:37,240
+things but to require people to come to the table when they want to do things at scale or
+
+426
+00:32:37,240 --> 00:32:42,600
+certain kind of commercial activities. Yeah because the cloud providers are user essentially right
+
+427
+00:32:42,600 --> 00:32:48,840
+I mean at that point. Yes that's actually very perceptive comment they are users they're not
+
+428
+00:32:48,840 --> 00:32:54,520
+distributors of software. Right. It's a little bit of a complicated question but I don't think
+
+429
+00:32:54,520 --> 00:33:02,840
+there's too much doubt about that. So what that means if you look at the GPL say it specifically
+
+430
+00:33:02,840 --> 00:33:12,200
+says that the license doesn't control the use of software and so that is where the issue comes
+
+431
+00:33:12,200 --> 00:33:21,960
+to play because the cloud providers are users and so under say GPL they don't have any you
+
+432
+00:33:21,960 --> 00:33:27,560
+know basically don't have any conditions at all. Right and it's kind of odd to say I mean sure
+
+433
+00:33:27,560 --> 00:33:32,440
+they're not distributing it out to you know individual installations but they are providing it
+
+434
+00:33:32,440 --> 00:33:37,640
+to many. So it's still one to many it's still many scenarios. So and that that seems to be where
+
+435
+00:33:37,640 --> 00:33:43,880
+the issue is that the language of the future of software the way it is is not so much especially
+
+436
+00:33:43,880 --> 00:33:48,200
+in cloud is not a distributed model. That's a single installation that means the distribution of
+
+437
+00:33:48,200 --> 00:33:53,000
+change. You're no longer sending a binary or source code to be compiled by a bunch of people
+
+438
+00:33:53,000 --> 00:33:58,200
+you're set up a service and then charging for the service it's just it's a new way of doing it
+
+439
+00:33:58,200 --> 00:34:04,680
+newer. Yeah and you know copyright law treats use and distribution a little bit differently
+
+440
+00:34:04,680 --> 00:34:12,520
+I think that one of the things that maybe it didn't anticipate properly was use was copying at scale
+
+441
+00:34:12,520 --> 00:34:21,160
+in order to deploy software for hundreds or thousands of users. That is something that is you know
+
+442
+00:34:21,160 --> 00:34:28,760
+relatively new so as software licensing has progressed you know certain things worked pretty well
+
+443
+00:34:28,760 --> 00:34:34,280
+when we were in a model where one person would use one copy of the software but that isn't the
+
+444
+00:34:34,280 --> 00:34:41,320
+world we live in anymore. So when it comes to the letter of the SSPL as reactions to
+
+445
+00:34:42,360 --> 00:34:49,240
+Mongo initially and now elastic resiliency now there have been critics there have been and this
+
+446
+00:34:49,240 --> 00:34:54,440
+is a debated thing about the topic is it open source is it open source which is I think a
+
+447
+00:34:54,440 --> 00:35:00,520
+terrible term. I keep it just hopped on the bandwagon and used it but this is the verbiage that's
+
+448
+00:35:00,520 --> 00:35:06,040
+out there. There are those who think it's a business risk this SSPL so now I'm reading from
+
+449
+00:35:07,080 --> 00:35:12,600
+Vicki Prasuerus blog you probably have read this and she says she showed it to some lawyers
+
+450
+00:35:12,600 --> 00:35:17,880
+some IP lawyers and she says by using an SSP project in your code you are agreeing that if you
+
+451
+00:35:17,880 --> 00:35:24,120
+provide an online service using that code then you will release not only that code but also the
+
+452
+00:35:24,120 --> 00:35:28,920
+code for every supporting piece of software all under the SSPL it's not a stretch to interpret the
+
+453
+00:35:28,920 --> 00:35:35,240
+wording of the license as requiring users of the SSPL software therefore to release the code
+
+454
+00:35:35,240 --> 00:35:41,240
+for everything straight down to the bare metal this is one interpretation of the license itself
+
+455
+00:35:41,240 --> 00:35:47,000
+saying effectively that there's perhaps this collateral damage that might happen because of the
+
+456
+00:35:47,000 --> 00:35:50,920
+way that it's written I would just love to hear as the author of it and I'm sure you've thought
+
+457
+00:35:50,920 --> 00:35:55,160
+through these things what how do you respond to that what do you think about that statement is it
+
+458
+00:35:55,160 --> 00:36:03,880
+feasible is it outlandish well I do think it's an over simplification of the of the terms of the
+
+459
+00:36:03,880 --> 00:36:12,200
+license and don't get me wrong these kinds of provisions are very complicated to read yeah so it's
+
+460
+00:36:12,200 --> 00:36:21,960
+hard to reduce them to sound bites I do think on on the question of business risk this is the way
+
+461
+00:36:21,960 --> 00:36:31,480
+I look at it I work with many many companies to develop open source compliance policies and so
+
+462
+00:36:31,480 --> 00:36:37,880
+what companies do when they develop those policies is they have like a stop go caution list
+
+463
+00:36:38,520 --> 00:36:47,400
+and you would not expect even AGPL to be on a go list in fact it's usually on a stop list already
+
+464
+00:36:47,400 --> 00:36:55,640
+and SSPL will be there to any network copy left license meaning any license that has source code
+
+465
+00:36:55,640 --> 00:37:03,560
+sharing requirements when you deploy within over network those will all be on a stop list so when
+
+466
+00:37:03,560 --> 00:37:13,400
+you say it's a business risk well yeah but already a lot of the copy left licenses were defined as
+
+467
+00:37:13,400 --> 00:37:21,480
+business risks so it's it's a you know you're not this isn't blindsided you this this this concern
+
+468
+00:37:21,480 --> 00:37:29,880
+it's it's known for me out the house door yeah of course I mean we you would not expect people
+
+469
+00:37:29,880 --> 00:37:37,160
+to green light SSPL software what they would do is they would look at the license and say okay this
+
+470
+00:37:37,160 --> 00:37:44,280
+is okay with us or it's not and then they would make a decision about it so that's something that
+
+471
+00:37:44,280 --> 00:37:51,560
+users have to decide for themselves I do think that what you quoted was over stating the risk
+
+472
+00:37:51,560 --> 00:37:59,160
+somewhat but but you know it's not useful to get into the details of it you have to actually look
+
+473
+00:37:59,160 --> 00:38:07,880
+at what the license requires and it's really is focused on particular use contexts where people
+
+474
+00:38:07,880 --> 00:38:13,320
+are providing software as a service hmm I want to say thank you to Vicki for writing this post
+
+475
+00:38:13,320 --> 00:38:17,960
+because I'm going to quote one more and ask you about this but very very helpful Vicki and
+
+476
+00:38:17,960 --> 00:38:25,240
+not doing this call with Heather she said basically in regards to the SSPL basically it's a hostile
+
+477
+00:38:25,240 --> 00:38:30,200
+proprietary license masquerading in the open source clothing now it's getting vicious
+
+478
+00:38:31,320 --> 00:38:38,520
+oh I don't know what to say whether it's proprietary proprietary is not open source so you know
+
+479
+00:38:38,520 --> 00:38:46,440
+it's really the same issue I actually think if you look at the FAQs and announcements and so forth
+
+480
+00:38:46,440 --> 00:38:53,880
+for Mongoin Elastic you know they're they're pretty forthcoming so I'm not sure what they're trying
+
+481
+00:38:53,880 --> 00:39:03,400
+to be masqueraded they're um so I think that's you know it's it's language intended to
+
+482
+00:39:04,520 --> 00:39:12,840
+insight inside a uh an argument but I don't know that it's terribly meaningful in an objective way
+
+483
+00:39:12,840 --> 00:39:19,640
+yeah the primary concern with the SSPL really is section 13 right that's the that's the
+
+484
+00:39:19,640 --> 00:39:23,160
+like a lot of the concern isn't really elsewhere in it obviously it's a long license but it's
+
+485
+00:39:23,160 --> 00:39:28,600
+primarily section 13 which describes which we talked about here which is redistribution restrictions
+
+486
+00:39:28,600 --> 00:39:37,720
+on usage etc yeah if you were to redline it against AGPL or even GPL3 you would find that
+
+487
+00:39:37,720 --> 00:39:44,520
+almost all the substantive changes are in section 13 well Heather thank you so much for joining us
+
+488
+00:39:44,520 --> 00:39:49,960
+and explaining these things in ways that we could only fumble around in the dark to understand I
+
+489
+00:39:49,960 --> 00:39:54,520
+think it's been very helpful and anything else that we didn't ask you or anything about the
+
+490
+00:39:54,520 --> 00:39:59,240
+license itself or about the situation that is being discussed and debated that you want to say
+
+491
+00:39:59,240 --> 00:40:05,880
+that we haven't asked you about well I would say that I would remind people that the alternative
+
+492
+00:40:05,880 --> 00:40:14,360
+is probably to go to a source available license so if people you know are calling it names and so
+
+493
+00:40:14,360 --> 00:40:21,640
+forth you know what they should consider is that businesses are going to do what their business
+
+494
+00:40:21,640 --> 00:40:29,880
+strategy requires and so most companies that don't adopt something like SSPL are going to go down
+
+495
+00:40:29,880 --> 00:40:36,200
+the source available route which is definitely not open source so it's a question of whether you
+
+496
+00:40:36,200 --> 00:40:42,040
+think half a loaf is better than none I think and there are definitely different views about that
+
+497
+00:40:42,040 --> 00:40:51,160
+I would say the reality is that most companies are actually going to use licenses that are truly
+
+498
+00:40:51,160 --> 00:40:59,960
+restrictive in a way rather than SSPL so I would say anybody who is using SSPL is at least
+
+499
+00:40:59,960 --> 00:41:15,160
+trying to go down something like an open source route even if you don't believe it's open source
+
+500
+00:41:15,160 --> 00:41:21,000
+up next we're talking about Manish John founder and CTO at DGRAPH labs Manish came on this podcast
+
+501
+00:41:21,000 --> 00:41:26,360
+a little over two years ago on episode 322 talking about licensing and reslicensing DGRAPH so we
+
+502
+00:41:26,360 --> 00:41:31,240
+thought it'd be fitting to get him on this episode as well there we go so Manish you and DGRAPH are
+
+503
+00:41:31,240 --> 00:41:36,280
+in a somewhat similar situation to elastic you're not elastic but you're set up a lot like elastic
+
+504
+00:41:36,280 --> 00:41:42,040
+is that right that's true so elastics like sensing the way they have done it is that they have
+
+505
+00:41:42,040 --> 00:41:48,920
+their open source code code located with their proprietary code and it's all source visible except
+
+506
+00:41:48,920 --> 00:41:54,680
+the open sources under Apache if I'm not wrong and then the proprietary code is under elastic
+
+507
+00:41:54,680 --> 00:42:01,480
+and similar to DGRAPH where our open source code is Apache and our proprietary code is under
+
+508
+00:42:01,480 --> 00:42:08,440
+DGRAPH license so as a matter know where do you hear about this news and did you read both sides
+
+509
+00:42:08,440 --> 00:42:13,000
+have you read what AWS has had to say and what's happened after the relisins what's your your
+
+510
+00:42:13,000 --> 00:42:19,480
+purview I mean I think I've been hiker news right I hiker news went into flames over this and so
+
+511
+00:42:19,480 --> 00:42:24,040
+that's where I came to know I don't I know actually I did not have a chance to look at what AWS
+
+512
+00:42:24,040 --> 00:42:29,640
+actually had to say about that but I really read through the multiple blog posts that elastic
+
+513
+00:42:31,000 --> 00:42:35,800
+sort of released about what they're changing and some of the reasonings for why they're changing
+
+514
+00:42:35,800 --> 00:42:40,680
+and this is a story that's it's not the first time right this is the same story that we already had
+
+515
+00:42:40,680 --> 00:42:48,520
+for cow crush TB we had this story for MongoDB we have this you know across a confluent
+
+516
+00:42:48,520 --> 00:42:56,120
+and ready slabs you know this is just a series of of changes that are happening in the
+
+517
+00:42:56,120 --> 00:43:01,000
+in that open source ecosystem and you guys went through similar things as well because we even
+
+518
+00:43:01,000 --> 00:43:06,520
+have a whole show for you back in October of 2018 where we have you on the changelog there and back
+
+519
+00:43:06,520 --> 00:43:14,280
+again DGRAPH's tale an excellent name if you're a fan of the Hobbit like I am episode
+
+520
+00:43:14,280 --> 00:43:19,080
+322 so you've told us a story before but like I guess we don't need to rehash the entire thing
+
+521
+00:43:19,080 --> 00:43:24,840
+but this has been an area of struggle for you and in your company as well it is something of
+
+522
+00:43:24,840 --> 00:43:29,400
+you know I wouldn't say it's such a big struggle as as something like elastic wear Amazon is
+
+523
+00:43:29,400 --> 00:43:34,760
+directly sort of like you know quote-unquote attacking them right for us it's more of like
+
+524
+00:43:34,760 --> 00:43:42,440
+forward-thinking scenario where we you know we realize that we love open source and just like
+
+525
+00:43:42,440 --> 00:43:48,040
+Shay mentioned the founder of elastic mentioned in his blog post you know I got I got my
+
+526
+00:43:48,040 --> 00:43:52,920
+feed-dapped into open source like long time ago and really believe in it and when I was
+
+527
+00:43:52,920 --> 00:43:58,520
+starting DGRAPH I I was not inspired by any sort of business model right like I was not planning
+
+528
+00:43:58,520 --> 00:44:03,400
+out hey how would like five years from now we will make money I didn't know how to make money
+
+529
+00:44:03,400 --> 00:44:08,200
+from open source I just wanted to build open source software right and that's how we got started
+
+530
+00:44:08,200 --> 00:44:14,600
+so similar sort of like trajectory there in terms of like our interest towards the open source
+
+531
+00:44:14,600 --> 00:44:25,320
+community and so you know I mean yeah I think the open source theme is similar there so what's
+
+532
+00:44:25,320 --> 00:44:33,240
+happened since is that he AWS has forked both elastic search and cabana and are going to carry
+
+533
+00:44:33,240 --> 00:44:38,440
+on open source forks community forks as they're kind of being pitched as what do you think about that
+
+534
+00:44:38,440 --> 00:44:43,800
+what are they going to succeed are they going to fail there is it a real risk for elastic or no
+
+535
+00:44:44,520 --> 00:44:50,680
+they did that once before right with the elastic open distro and I think people were really concerned
+
+536
+00:44:50,680 --> 00:44:56,600
+about how that would pan out and remind me Elastic's share price has not decreased too much right
+
+537
+00:44:56,600 --> 00:45:00,840
+it hasn't gone into a spiral downward so I guess they're doing well right they'll probably
+
+538
+00:45:00,840 --> 00:45:07,560
+survive another attack from AWS but I think you know some of the criticism that I see online
+
+539
+00:45:08,120 --> 00:45:16,920
+about more DBs SSPL and some other companies is that you know these open source companies are
+
+540
+00:45:16,920 --> 00:45:21,800
+motivated by business and and therefore they are somehow being more realistic like more
+
+541
+00:45:22,600 --> 00:45:29,880
+morally they are being challenged but I feel like you know the same people then turn around and say
+
+542
+00:45:29,880 --> 00:45:35,080
+Amazon is completely okay with doing these kind of things because there's well within their
+
+543
+00:45:35,080 --> 00:45:41,720
+rights to do so because of the licensing put together by the open source and so the conflict
+
+544
+00:45:41,720 --> 00:45:48,520
+that I feel is right there right you cannot have two different moral bars one for the company who
+
+545
+00:45:48,520 --> 00:45:56,920
+is who is making money out of your inventions and the second for the inventor themselves right
+
+546
+00:45:56,920 --> 00:46:05,240
+and sometimes I just wonder right how many open source infrastructure software has Amazon
+
+547
+00:46:05,240 --> 00:46:13,320
+created and launched in open source right like do we then do we expect to see Dynamo DB coming out
+
+548
+00:46:13,320 --> 00:46:18,200
+in open source so someone else can build a business like Amazon has done with Dynamo DB that'll be
+
+549
+00:46:18,200 --> 00:46:21,960
+great right I mean they'll be great day for open source if Amazon does that but I don't think
+
+550
+00:46:21,960 --> 00:46:26,760
+they have any plan to do it because that's not how they operate and so you know it's well within
+
+551
+00:46:26,760 --> 00:46:30,840
+I think I think it's in fact I would say it's recommended for open source companies to make sure that
+
+552
+00:46:30,840 --> 00:46:38,120
+they are able to to to build a successful business just like Amazon is building just like everybody
+
+553
+00:46:38,120 --> 00:46:46,440
+else is building and so the the motivation to make money out of your inventions is completely
+
+554
+00:46:46,440 --> 00:46:53,320
+justified or in I would say motor grounds right mm-hmm well there's a concern too at least
+
+555
+00:46:53,960 --> 00:47:01,320
+based upon Shay's blog post on Elastic saying that Amazon and AWS wasn't putting back
+
+556
+00:47:01,320 --> 00:47:05,800
+into the open source bucket so to speak so from two avenues one the perspective you just share
+
+557
+00:47:05,800 --> 00:47:11,480
+which is Dynamo DB for example is an open source and that's not part of their business plan to do
+
+558
+00:47:11,480 --> 00:47:19,400
+that but then the concern and I suppose what led to this scenario where now is is essentially
+
+559
+00:47:20,120 --> 00:47:24,920
+AWS not playing by the community rules the license doesn't depict this and that's kind of what
+
+560
+00:47:24,920 --> 00:47:29,720
+this move is doing is like hey if you can't operate by community rules then we're going to put a
+
+561
+00:47:29,720 --> 00:47:34,920
+license that that makes it illegal for you to do things that are the way so not pitching back into
+
+562
+00:47:34,920 --> 00:47:40,760
+the open source name but then you can sort of draw some sentiment from just simply the titles of
+
+563
+00:47:40,760 --> 00:47:48,200
+their blog post on the AWS open source blog back in 2019 from Adrian Croft uh cockroft
+
+564
+00:47:48,920 --> 00:47:52,680
+keeping open source open open dish or for lash search which is something you mentioned
+
+565
+00:47:52,680 --> 00:47:57,640
+and then the second one is the more recent around Elasticsearch which is stepping up for a truly
+
+566
+00:47:57,640 --> 00:48:01,960
+open source Elasticsearch it's an interesting perspective you've drawn there where they haven't
+
+567
+00:48:01,960 --> 00:48:07,480
+open source certain things they have because of business reasons but then wanting to be a good
+
+568
+00:48:07,480 --> 00:48:13,800
+community player in these ways it seems I don't know what do you think it is questionable isn't
+
+569
+00:48:13,800 --> 00:48:18,840
+it it is kind of questionable and I think like you know if you look at SSPL the server side
+
+570
+00:48:20,200 --> 00:48:25,880
+public license I think from MongoDB it's actually really it's it I actually I'm still a bit
+
+571
+00:48:25,880 --> 00:48:32,520
+baffled that it's not approved by OSI because it to me is a fork of derivative of GPL just like
+
+572
+00:48:32,520 --> 00:48:38,760
+AGPL is which also makes GPL a bit more permissive right if you look at AGPL it's you know allows
+
+573
+00:48:38,760 --> 00:48:44,760
+you to not have to release your source code if you are using it over the network or something of
+
+574
+00:48:44,760 --> 00:48:50,600
+that sort or actually I forget exactly the details there but FSPL says that you know you don't have
+
+575
+00:48:50,600 --> 00:48:57,000
+to release your source code if you're not directly competing by providing the core product as a
+
+576
+00:48:57,000 --> 00:49:04,600
+service right so it's more permissive than a GPL and so I think it has all the merits I feel in
+
+577
+00:49:04,600 --> 00:49:12,520
+my opinion to be open source approved and and and guess if SSPL in a world where SSPL gets open
+
+578
+00:49:12,520 --> 00:49:18,600
+source approval I don't think we have any problem here right then we then then everybody has
+
+579
+00:49:18,600 --> 00:49:23,400
+already sort of like gathered around SSPL which which we could not do around the common
+
+580
+00:49:23,400 --> 00:49:27,400
+skills right I mean that was the same idea for common skills but it could not get us there but
+
+581
+00:49:27,400 --> 00:49:33,400
+already be the big name and some already we could get the industry around SSPL and then we don't
+
+582
+00:49:33,400 --> 00:49:37,800
+have a debate because it would be open source right yeah there's some details around that we had
+
+583
+00:49:37,800 --> 00:49:42,680
+a conversation with Heather Maker on this exact subject and something she had said which will be in
+
+584
+00:49:42,680 --> 00:49:53,240
+the same podcast is if you redlined SSPL versus AGPL the primary difference is this sort of come out
+
+585
+00:49:53,240 --> 00:49:57,960
+is essentially section 13 which describes you know if you make the functionality the program or
+
+586
+00:49:57,960 --> 00:50:02,040
+modified version available to their parties of service blah blah blah blah that's where the
+
+587
+00:50:02,040 --> 00:50:09,240
+changes is section 13 everything else is essentially AGPL and there is a lot of debate around the new
+
+588
+00:50:09,240 --> 00:50:15,000
+ones and the process to be approved so OSD is very clear hasn't changed in a long time OSD being the
+
+589
+00:50:15,000 --> 00:50:19,960
+open source definition that's very clear because hasn't changed and it's even derived from
+
+590
+00:50:19,960 --> 00:50:25,640
+debients existing rules on what open source definition is so there's some history there but the
+
+591
+00:50:25,640 --> 00:50:33,080
+criteria and the ways that you go about getting these licenses approved by OSI is a bit more
+
+592
+00:50:33,080 --> 00:50:38,200
+difficult and you can read the transcripts and the notes from the meetings and stuff but that
+
+593
+00:50:38,200 --> 00:50:45,320
+takes a very motivated user slash reader and so some of this intention that shows to sort of
+
+594
+00:50:45,320 --> 00:50:51,800
+demystifies them that stuff and maybe give you a TLDR TLD L too long to listen but you know
+
+595
+00:50:52,600 --> 00:50:57,800
+that's essentially is this criteria for getting it passed you say that the SSPL should be
+
+596
+00:50:57,800 --> 00:51:04,440
+or could be open source your your baffled as you said that it's not yeah yeah and it has been
+
+597
+00:51:04,440 --> 00:51:08,440
+approved by that yeah and to be honest like I haven't looked at the counter arguments to that right
+
+598
+00:51:08,440 --> 00:51:13,720
+then I'm sure there's there are smart people there on the side and they have some counter
+
+599
+00:51:13,720 --> 00:51:20,200
+arguments but from from a slightly like you know distant perspective without having to go into
+
+600
+00:51:20,200 --> 00:51:26,280
+the intricate details it seems very similar and maybe if it was built in 1990 is it might have
+
+601
+00:51:26,280 --> 00:51:33,160
+already been involved in in OSI right but I think one thing that that that we should probably take
+
+602
+00:51:33,160 --> 00:51:40,600
+away from elastics stuff is that the holy grail of license here leads to so if you look at
+
+603
+00:51:40,600 --> 00:51:45,560
+elastic license as well right it's it's divided into portions one is the the open source part and
+
+604
+00:51:45,560 --> 00:51:50,440
+the other one is the completely proprietary part right and so proprietary part they are not changing
+
+605
+00:51:50,440 --> 00:51:55,320
+from my understanding they're changing the open source part of the code and making it available via
+
+606
+00:51:55,320 --> 00:52:01,400
+either SSPL or the elastic license and both of them sort of in some shape or form this allow
+
+607
+00:52:02,200 --> 00:52:07,560
+building a computing service right right now a restrict cloud service providers from offering
+
+608
+00:52:07,560 --> 00:52:12,200
+this is quotes yeah so that says restrict cloud service providers from offering our service
+
+609
+00:52:12,200 --> 00:52:17,240
+as a service right and that's in violation of OSD6 and and they are very clear about it's not
+
+610
+00:52:17,240 --> 00:52:23,160
+it's only to third parties not for internal usage so if I am a big company and I need to build
+
+611
+00:52:23,160 --> 00:52:30,360
+a product I can provide it as service to my other teams in the company just not to your users
+
+612
+00:52:30,360 --> 00:52:37,320
+directly right it's a commercial restriction don't compete with me essentially exactly yeah right
+
+613
+00:52:37,320 --> 00:52:41,240
+because you can compete internally inside your own company yeah not make any money from it but get
+
+614
+00:52:41,240 --> 00:52:46,760
+great usage of the software but you can't create a competing company right against the inventor
+
+615
+00:52:46,760 --> 00:52:50,840
+yeah this goes back to what you're saying before the inventor or the user the invention
+
+616
+00:52:50,840 --> 00:52:57,960
+exactly yeah and they can still build a commercial product on it just not a competing service
+
+617
+00:52:57,960 --> 00:53:04,440
+right but the holy grail would be to to offer a single license right that that is that
+
+618
+00:53:04,440 --> 00:53:09,320
+that takes away hey this is proprietary part of the code and this is the quote-unquote open source
+
+619
+00:53:09,320 --> 00:53:14,680
+or similar to open source part of the code ideally what what looks like what they want to get to
+
+620
+00:53:15,240 --> 00:53:20,840
+is to offer a single license that can cover both their free and their paid features while being
+
+621
+00:53:20,840 --> 00:53:28,280
+as open as possible right and that's the that's the if that would be there like I think we would
+
+622
+00:53:28,280 --> 00:53:33,560
+jump on it immediately because we also currently have dual license which is what cockroach has
+
+623
+00:53:33,560 --> 00:53:39,880
+which is what elastic has and you know many others have but having that single license would be
+
+624
+00:53:40,600 --> 00:53:45,160
+would be the holy grail and I don't know if you wanted to talk also about BSL right which is the
+
+625
+00:53:45,160 --> 00:53:55,880
+MariaDB's license where they say that the initial code is going to be a proprietary but after
+
+626
+00:53:55,880 --> 00:54:01,240
+a certain amount of time three to five years it would become open source and it would become a
+
+627
+00:54:01,240 --> 00:54:07,000
+patchy to or something liberal which is what cockroach is doing cockroach DB is doing so
+
+628
+00:54:07,000 --> 00:54:13,800
+they're open source is which to cockroach BSL modifications likely you know that's also like
+
+629
+00:54:14,520 --> 00:54:20,440
+a great way to but I actually say the same thing right which is you know please don't compete with
+
+630
+00:54:20,440 --> 00:54:25,640
+us by providing a service which is providing a service to our core product right like
+
+631
+00:54:25,640 --> 00:54:32,200
+you know and if you think in terms of what's the core product for Amazon you know let's say
+
+632
+00:54:32,200 --> 00:54:37,320
+let's say like e-commerce is a core product and if you were to like use Amazon machines to
+
+633
+00:54:38,520 --> 00:54:41,800
+or Amazon technology to actually build a computing stuff I'm pretty sure they'll be pretty
+
+634
+00:54:41,800 --> 00:54:47,640
+pissed as well and so so all this comes into doing is that we have spent a lot of time and effort
+
+635
+00:54:47,640 --> 00:54:53,400
+into building and this is our main source of source of living right right let's just play
+
+636
+00:54:53,400 --> 00:54:58,200
+play nicely right otherwise we have to invent new licenses yeah they have a Kramer shared
+
+637
+00:54:58,200 --> 00:55:05,880
+some of the sentiment on that subject because century was licensed BDS-3 and transition to the BSL
+
+638
+00:55:06,440 --> 00:55:10,280
+and I'm paraphrasing but when I can recall from that conversation episode 371
+
+639
+00:55:10,840 --> 00:55:15,720
+realizing century was essentially David was saying I want to do whatever it takes to help me run
+
+640
+00:55:16,360 --> 00:55:22,600
+this commercial business but also respect open source because without the business making
+
+641
+00:55:22,600 --> 00:55:28,600
+the thing there is no thing and that's a paraphrase of yeah David's sentiment on that but that's
+
+642
+00:55:28,600 --> 00:55:33,960
+essentially what he boiled it down to was his concern in regards to transitioning away from BDS-3
+
+643
+00:55:33,960 --> 00:55:39,160
+yeah to the business the business source license which you mentioned yeah and actually if you
+
+644
+00:55:39,160 --> 00:55:43,960
+think about where that's what is happening right like you know I mean again I argued that
+
+645
+00:55:43,960 --> 00:55:50,520
+SSPL is very close to open source to today to the AGPL right but SSPL is not open source
+
+646
+00:55:50,520 --> 00:55:56,040
+so what's actually happening right now is a bunch of open source companies which truly believe in
+
+647
+00:55:56,040 --> 00:56:03,240
+open source are having to switch to court and court non open source licenses and that's not that's
+
+648
+00:56:03,240 --> 00:56:07,720
+not great right yeah and that's not great and the funny thing is they are all talking about the
+
+649
+00:56:07,720 --> 00:56:13,880
+same one player in the market right they're not talking about about a Google or about a Microsoft
+
+650
+00:56:13,880 --> 00:56:18,280
+or anybody else in fact in the elastic blog post they mentioned that they have played very nicely
+
+651
+00:56:18,280 --> 00:56:26,120
+with all the other players in the ecosystem just the just AWS right much so I have no person
+
+652
+00:56:26,920 --> 00:56:31,000
+yeah exactly I mean I have no personal thing against it less right like is we we've done earlier
+
+653
+00:56:31,000 --> 00:56:36,200
+let's be a completely fine and from what I understand they're not trying to build a dig up alternative
+
+654
+00:56:36,200 --> 00:56:42,120
+right but it is there is something there where if a bunch of companies are talking about the same
+
+655
+00:56:42,120 --> 00:56:51,480
+you know scored on court be a curious actor yeah I don't want to say a bad actor right
+
+656
+00:56:51,480 --> 00:56:56,040
+because exactly because he is don't know but a curious actor I think there must be something
+
+657
+00:56:56,040 --> 00:57:01,960
+there right do you think then given that we had just said that the OSI that it's in their best
+
+658
+00:57:01,960 --> 00:57:07,640
+interest for open source to help these businesses that have this concern have this trouble
+
+659
+00:57:07,640 --> 00:57:16,120
+to create an open source license that give them the needs they have the to sort of solve the
+
+660
+00:57:16,120 --> 00:57:22,200
+needs they have these problems but also adhere to the letter of open source because if you look
+
+661
+00:57:22,200 --> 00:57:28,840
+at the intent it seems like they're intending to respect and live within the world of open source
+
+662
+00:57:28,840 --> 00:57:34,680
+whether it's for the in quotes open source brand name that can't be trademarked because it's
+
+663
+00:57:34,680 --> 00:57:42,600
+not trademarkable but it certainly has a market ability to it like if you if you're masquerade as
+
+664
+00:57:42,600 --> 00:57:47,160
+faux open source is that right Jared faux open source that's right then you're not open source
+
+665
+00:57:47,160 --> 00:57:52,760
+and but there is a your file is a market ability to sing your open source for sure absolutely
+
+666
+00:57:52,760 --> 00:57:59,160
+yeah absolutely and I think you know we do open source because it allows it's it's not just a way
+
+667
+00:57:59,160 --> 00:58:05,240
+to to have more eyes and make sure that the product is the score is of high quality and so and so
+
+668
+00:58:05,240 --> 00:58:10,680
+forth but there's also it's a distribution model right it's a distribution model it's a way by
+
+669
+00:58:10,680 --> 00:58:15,800
+which you think your software could be consumed by anybody without necessarily having to pay you
+
+670
+00:58:15,800 --> 00:58:20,680
+right and again they they're not saying that if you build a commercially successful product
+
+671
+00:58:20,680 --> 00:58:24,840
+using our software pay us they're not saying that they're just saying like just don't
+
+672
+00:58:24,840 --> 00:58:32,920
+build a competing service against us and and also going back to the first the the the initiation
+
+673
+00:58:32,920 --> 00:58:39,720
+of a bunch of these open source companies it started with like one or multiple like people who
+
+674
+00:58:39,720 --> 00:58:44,680
+just believed in open source right they they just wanted to make things in open source because they
+
+675
+00:58:44,680 --> 00:58:50,120
+have consumed open source software they're life right so when I was like in college I was all into
+
+676
+00:58:50,120 --> 00:58:55,880
+Linux and I was playing with Gen2 and Ubuntu and I don't know like whatever other Linux flavor
+
+677
+00:58:55,880 --> 00:59:01,000
+there was out there free BSD net BSD and I just believed in open source and that was our stance
+
+678
+00:59:01,000 --> 00:59:09,320
+against you know windows at the time right and so I've created multiple projects some of which
+
+679
+00:59:09,320 --> 00:59:14,440
+actually got popular including the graph and then we have Badger and then we have Ristrano and
+
+680
+00:59:14,440 --> 00:59:20,920
+they are all open source because we just believe in it right um it's a bit of like a pain to to
+
+681
+00:59:20,920 --> 00:59:27,960
+have to move away from that even in theory right even in theory yeah just because of this this one
+
+682
+00:59:27,960 --> 00:59:36,600
+problem so Monesh clean slate start the graph over today same exact software same business pick a
+
+683
+00:59:36,600 --> 00:59:49,880
+license I think SSPL is looking pretty attractive SSPL is looking pretty attractive right now
+
+684
+00:59:49,880 --> 00:59:55,960
+and and also like just just notice one more thing right from 2010 or 2015 the world has changed
+
+685
+00:59:55,960 --> 01:00:03,160
+to be more cloud-first and on-prem later than on-prem first and cloud later approach right and so
+
+686
+01:00:03,160 --> 01:00:08,200
+if I were if I were or somebody else were to build a service today they might choose not to even
+
+687
+01:00:08,200 --> 01:00:12,840
+make it open source they might say you know what snowflake has done really well by being
+
+688
+01:00:12,840 --> 01:00:19,880
+completely cloud-based system and if I'm not wrong snowflake is not open source right um and so
+
+689
+01:00:19,880 --> 01:00:25,080
+so why open source right maybe that maybe that could be the question is like open source already
+
+690
+01:00:25,080 --> 01:00:30,360
+has done so problems because there is you know actor or multiple actors like causing so many
+
+691
+01:00:30,360 --> 01:00:35,560
+issues like why bother with all that just avoid all of that and just go completely close source
+
+692
+01:00:36,440 --> 01:00:40,760
+and you crystal build a good business out of it right and so that then it becomes just a question
+
+693
+01:00:40,760 --> 01:00:45,160
+of principle right do you still really believe in open source do you still believe that your
+
+694
+01:00:45,160 --> 01:00:50,040
+core should be we should be other people should be able to check it and make sure that you're
+
+695
+01:00:50,040 --> 01:00:56,200
+not doing anything fishy or help you find bugs or you know that kind of stuff so it becomes
+
+696
+01:00:56,200 --> 01:01:06,760
+a matter of principle and a matter of business it seems like this episode of the change log is brought
+
+697
+01:01:06,760 --> 01:01:13,480
+to you by render render is a unified platform to build and run all your apps and websites
+
+698
+01:01:13,480 --> 01:01:20,200
+with free SSL a global CDN private networks and audit employees from Git they handle everything
+
+699
+01:01:20,200 --> 01:01:25,560
+from simple static sites to complex applications with dozens of microservices if you're a developer
+
+700
+01:01:25,560 --> 01:01:31,480
+or a founder that's frustrated with AWS's complexity or roku's high costs you owe it to yourself
+
+701
+01:01:31,480 --> 01:01:36,680
+to use the $100 in free credits are giving our listeners to give render a try render is built for
+
+702
+01:01:36,680 --> 01:01:42,280
+modern applications and offers everything you need out of the box one click scaling zero downtime
+
+703
+01:01:42,280 --> 01:01:48,920
+deploys built in SSL private networking manage databases secrets and configuration management
+
+704
+01:01:48,920 --> 01:01:53,880
+persistent block storage and infrastructure as code the roku customers running production and
+
+705
+01:01:53,880 --> 01:01:59,480
+staging workloads typically see cost reductions of over 50% after switching to render here's the
+
+706
+01:01:59,480 --> 01:02:04,040
+best part we work closely with the team at render to ensure you have zero risk by giving you
+
+707
+01:02:04,040 --> 01:02:09,480
+$100 in free credits plus they're going to assign a world-class engineer to your account to offer
+
+708
+01:02:09,480 --> 01:02:13,640
+guidance and answer any questions you have when you're ready to transition your infrastructure they'll
+
+709
+01:02:13,640 --> 01:02:17,560
+be there to help you with that too automate your cloud hosting with render at render.com slash
+
+710
+01:02:17,560 --> 01:02:23,400
+change log get $100 in free credits to try the render platform plus a world-class engineer assigned
+
+711
+01:02:23,400 --> 01:02:29,080
+your account to guide you along the way to send an email to our special email change log at render.com
+
+712
+01:02:29,080 --> 01:02:33,400
+to get access to those free credits all that begins at render.com slash change log
+
+713
+01:02:46,920 --> 01:02:51,640
+coming up in this segment we're talking with Paul Dicks co-founder and CTO at influx data
+
+714
+01:02:51,640 --> 01:02:56,360
+Paul shares his perspective on running an open source business how influx data is innovating their
+
+715
+01:02:56,360 --> 01:03:02,520
+commercial offering while having a permissive MIT licensed version of influx DB Paul also shares
+
+716
+01:03:02,520 --> 01:03:08,360
+his thoughts on this standoff between elastic and AWS and why he's long gone Mongo and short on
+
+717
+01:03:08,360 --> 01:03:14,360
+elastic here we go. So Paul tell us tell us your name tell us your company and kind of your
+
+718
+01:03:14,360 --> 01:03:19,800
+view of the open source world where your opinion is coming from. Yeah so I'm Paul Dicks I'm the CTO
+
+719
+01:03:19,800 --> 01:03:26,120
+co-founder of influx data where the makers of influx DB which is an open source time series database
+
+720
+01:03:27,400 --> 01:03:32,520
+I created it in 2013 and I've been initially running the company and then as CTO
+
+721
+01:03:33,400 --> 01:03:39,080
+which I'm still doing to this day. So my experience over that time has basically been
+
+722
+01:03:39,080 --> 01:03:44,840
+trying to build a business around an open source software project particularly in infrastructure
+
+723
+01:03:44,840 --> 01:03:50,840
+software and in databases in particular so elastic obviously I'm very familiar with I saw it when
+
+724
+01:03:50,840 --> 01:03:56,360
+they you know we're initially becoming a company I remember the project early on some of the work
+
+725
+01:03:56,360 --> 01:04:01,320
+that they've done was you know served as inspiration to me as I was building out influx and the
+
+726
+01:04:01,320 --> 01:04:07,640
+various parts of our stack. Very similar software very similar business model it looks like influx
+
+727
+01:04:07,640 --> 01:04:12,360
+is MIT can you tell us like your license selection and how your business works around it.
+
+728
+01:04:12,360 --> 01:04:18,680
+Yeah so all of the open source software that we create is MIT licensed and our business model is
+
+729
+01:04:18,680 --> 01:04:24,360
+basically so we are essentially at this point an open core business so there's open source
+
+730
+01:04:24,360 --> 01:04:30,280
+influx DB which is MIT licensed people to do whatever the what they want with it it works essentially
+
+731
+01:04:30,280 --> 01:04:36,440
+as a single server we have a fork of the open source project that is closed source and proprietary
+
+732
+01:04:36,440 --> 01:04:43,320
+if you want high availability or scale out clustering of influx DB that is our commercial offering
+
+733
+01:04:43,320 --> 01:04:48,520
+right so essentially we don't put clustering features into the open source everything else
+
+734
+01:04:49,240 --> 01:04:53,400
+is fair game to go into the open source if it has to do with the single server optimizing query
+
+735
+01:04:53,400 --> 01:04:59,320
+performance API's functionality all that kind of stuff it goes into free open source so we
+
+736
+01:04:59,320 --> 01:05:09,320
+we launched to this as a you know managed service inside of AWS in I think it was April of 2016
+
+737
+01:05:10,040 --> 01:05:17,160
+we launched it as basically like on premise software product that people could buy in September of 2016
+
+738
+01:05:18,280 --> 01:05:24,200
+our AWS service is still running to this day essentially what that is is it's the closed source
+
+739
+01:05:24,200 --> 01:05:30,200
+software spun up you know a customer can come and sign up they say what size you know instances they
+
+740
+01:05:30,200 --> 01:05:36,040
+want how much storage how many instances we spin up the you know the closed source enterprise
+
+741
+01:05:36,040 --> 01:05:43,000
+version of our product on it we add monitoring and backups and stuff like that and then you know
+
+742
+01:05:43,000 --> 01:05:50,280
+that's that's the hosted version of the product the what I say on premise version is essentially
+
+743
+01:05:50,280 --> 01:05:55,640
+you buy the software from us it's an annual subscription and then you run and manage it yourself
+
+744
+01:05:55,640 --> 01:06:01,000
+and that's either in your own data centers but plenty of people are also doing it inside of AWS
+
+745
+01:06:01,000 --> 01:06:08,920
+GCP all that kind of stuff last year or I guess late 2019 now we launched basically
+
+746
+01:06:08,920 --> 01:06:15,800
+version two of our cloud product and that essentially is it's a very different kind of thing
+
+747
+01:06:15,800 --> 01:06:20,360
+because it's not just a database and it doesn't look anything like the open source software that
+
+748
+01:06:20,360 --> 01:06:25,560
+we create the API is the same but the underlying like architecture and how everything works together
+
+749
+01:06:25,560 --> 01:06:32,120
+is completely different and that's for version two dot o of inflex db so the model we
+
+750
+01:06:32,920 --> 01:06:39,240
+switch to with two dot o we essentially moved to a cloud first model so we deliver that cloud
+
+751
+01:06:39,240 --> 01:06:47,000
+products continuously is like a SaaS service and then over time some of those features get pulled
+
+752
+01:06:47,000 --> 01:06:53,080
+out into the open source inflex db is that because of a realization that the other way it wasn't
+
+753
+01:06:53,080 --> 01:06:59,720
+working well enough or it's just why did you switch to the cloud first model um mainly because
+
+754
+01:07:00,760 --> 01:07:05,160
+it has nothing to do with open source first it closed it has everything to do with software
+
+755
+01:07:05,160 --> 01:07:10,760
+delivery cycles so before we looked very much like an enterprise software company we'd have
+
+756
+01:07:11,320 --> 01:07:15,720
+anywhere from two to four feature bearing releases a year which could then you know get shipped to
+
+757
+01:07:15,720 --> 01:07:20,600
+our cloud customers and shipped to our own promise customers the problem with that is you don't get
+
+758
+01:07:20,600 --> 01:07:26,120
+that many cycles of iteration and each release is like super painful to do because there's
+
+759
+01:07:26,120 --> 01:07:31,080
+so much code wrapped up in it so I really wanted to move to a continuous delivery model so we
+
+760
+01:07:31,080 --> 01:07:36,360
+could get much faster feedback features out to customers quicker and the individual releases would
+
+761
+01:07:36,360 --> 01:07:43,000
+be much much smaller so that had to do with basically wanting to be a cloud company and deliver a cloud
+
+762
+01:07:43,000 --> 01:07:48,760
+product as opposed to deliver like a packaged on premise enterprise products how does that
+
+763
+01:07:48,760 --> 01:07:53,960
+trickle down to your open source then how does inflex db the open source benefit or not benefit
+
+764
+01:07:53,960 --> 01:08:00,280
+from this this switch uh I think the benefit is that by the time something lands in open source
+
+765
+01:08:00,280 --> 01:08:05,800
+we've already vetted the features embedded like its functionality and how it works inside our cloud
+
+766
+01:08:05,800 --> 01:08:12,040
+products the things with our cloud product we're able to we're able to iterate on it and release
+
+767
+01:08:12,040 --> 01:08:17,560
+fixes very quickly once you ship something in an open source release it's much more painful to
+
+768
+01:08:17,560 --> 01:08:25,720
+you know ship a fix ship an update so I think that's a benefit um the the drawback is it's less
+
+769
+01:08:25,720 --> 01:08:30,760
+I think it reduces the collaboration with the community in terms of what we're developing and
+
+770
+01:08:30,760 --> 01:08:36,840
+how it's getting done and all that kind of stuff it basically makes like the open source like a
+
+771
+01:08:36,840 --> 01:08:43,000
+downstream kind of products right yeah well it reflects the tweet you put out which is my own
+
+772
+01:08:43,000 --> 01:08:48,680
+preference is to keep open co-permissive and open and have a clear strategy as you just
+
+773
+01:08:48,680 --> 01:08:52,840
+depicted here with how that code will be used in the commercial offering so you're eating on
+
+774
+01:08:52,840 --> 01:08:59,080
+don't but which is good so yeah so there's what I just described is basically our 2.0 model but
+
+775
+01:08:59,080 --> 01:09:05,960
+actually I'm actually trying to move even beyond that over to what I call basically like
+
+776
+01:09:05,960 --> 01:09:13,000
+complementary software model right so we have a new project that we announced a few months ago
+
+777
+01:09:13,000 --> 01:09:19,320
+called inflex db-i-ox which is basically the new core of the database written in rust using a patch
+
+778
+01:09:19,320 --> 01:09:25,000
+arrow and the way that we're building this out is essentially there's the open source thing
+
+779
+01:09:25,000 --> 01:09:29,240
+and then there's another piece of software that we have this close source and as a whole the
+
+780
+01:09:29,240 --> 01:09:33,400
+system is designed to be two pieces of software one of which is totally open and permissive
+
+781
+01:09:33,960 --> 01:09:37,880
+permissively licensed you know you can do whatever you want with it you can compete with us that's
+
+782
+01:09:37,880 --> 01:09:43,240
+fine that's by design um and then the other piece which is the software that we're writing
+
+783
+01:09:43,240 --> 01:09:47,960
+to be able to run the open source software in our cloud offering so the reason why I say it's
+
+784
+01:09:47,960 --> 01:09:53,320
+complementary is because what I want is I want our cloud product to be running the open source bits
+
+785
+01:09:53,320 --> 01:10:00,120
+exactly as is like exactly as the open source community experiences them because it means we'll find
+
+786
+01:10:00,120 --> 01:10:05,560
+bugs faster it also means we can have more of a collaborative effort with the community in terms
+
+787
+01:10:05,560 --> 01:10:11,000
+of making improvements because we're not like right now with our cloud 2 offering like
+
+788
+01:10:11,800 --> 01:10:17,800
+inflex db-2.0 open source is one project cloud 2 is totally separate now we use some of the
+
+789
+01:10:17,800 --> 01:10:25,800
+libraries from inflex db-2 but it's not like it's not even like a fork of the project it's literally
+
+790
+01:10:25,800 --> 01:10:33,000
+two separate you know projects and products and they have the they have like the same API
+
+791
+01:10:33,560 --> 01:10:39,720
+yeah two masters right exactly yeah with with iox instead of serving two masters what I mean
+
+792
+01:10:39,720 --> 01:10:43,720
+like literally you're serving two masters you have two different projects you it's very difficult
+
+793
+01:10:43,720 --> 01:10:49,800
+serve both easily absolutely like internally we have a separate team that works on the open source
+
+794
+01:10:49,800 --> 01:10:55,800
+bits versus the people working on the cloud close source cloud product right i actually the
+
+795
+01:10:55,800 --> 01:11:00,200
+benefits the open source and it seemed like the benefit of the open source was obvious but
+
+796
+01:11:00,200 --> 01:11:03,880
+that they're different because they're separate that's what it seemed like I was going to ask you
+
+797
+01:11:03,880 --> 01:11:08,120
+about that because it seems like with your cloud 2 that you mentioned you can obviously push forward
+
+798
+01:11:08,120 --> 01:11:13,640
+but it's downstream the open source is downstream and it seems like maybe you know just
+
+799
+01:11:13,640 --> 01:11:19,800
+disconnected basically yeah yeah it's a bit disconnected whereas like with this new model again like
+
+800
+01:11:19,800 --> 01:11:25,720
+my goal is so we offer it as a cloud product first that's we're not doing that yet but then later
+
+801
+01:11:25,720 --> 01:11:32,120
+we'll offer it as an on premise product but the idea there is that people who are adopt
+
+802
+01:11:32,120 --> 01:11:36,600
+iox and you know deploy a bunch of servers and stuff like that if they come to us and they want
+
+803
+01:11:36,600 --> 01:11:41,800
+the on premise product it's a product that they add in addition to the open source software
+
+804
+01:11:41,800 --> 01:11:46,600
+they're already running right they continue to do that it's very very different than our old
+
+805
+01:11:46,600 --> 01:11:53,480
+inflex dv1.x enterprise model where our enterprise product is a replacement for the open source
+
+806
+01:11:53,480 --> 01:11:58,680
+inflex db right i think that's a like a heavier lift and it's a bigger ask for
+
+807
+01:11:59,640 --> 01:12:05,400
+users to replace their open source bits like it's better i think it's better if they're able to
+
+808
+01:12:05,400 --> 01:12:10,440
+run the open source bits and continue to have that experience because one it makes the contribution
+
+809
+01:12:10,440 --> 01:12:15,880
+easier it makes it easier for them to consider adopting a commercial product because at that point
+
+810
+01:12:15,880 --> 01:12:20,680
+they're saying like okay i have this commercial product but it's not like i'm still using the
+
+811
+01:12:20,680 --> 01:12:26,200
+open source bits so i can still be sure that you know if the commercial relationship goes sour
+
+812
+01:12:26,200 --> 01:12:31,640
+or i decide i don't like want that functionality it's still good i can still continue to use the
+
+813
+01:12:31,640 --> 01:12:38,520
+open source bits there's nothing so interesting ramifications that i think i would love to see play out
+
+814
+01:12:38,520 --> 01:12:43,160
+as you as you go about deploying that new idea in my understanding correctly it's kind of like
+
+815
+01:12:44,280 --> 01:12:51,320
+the open source bits is like the core software offering and then the the proprietary stuff is like
+
+816
+01:12:51,320 --> 01:12:55,480
+like a management controller or like a deployment type of a thing like it's all the things are
+
+817
+01:12:55,480 --> 01:13:01,240
+that surround it that you would be offering as a service perhaps but this is as a licenseable
+
+818
+01:13:02,040 --> 01:13:07,160
+addition yeah that's a good way of thinking of it it's so yeah we it's basically all this code that
+
+819
+01:13:07,160 --> 01:13:14,200
+we have to write to offer it as a service right operations backups like deploying new versions of it
+
+820
+01:13:14,200 --> 01:13:19,160
+management all this kind of stuff the the other thing is we want to be able to offer that as an
+
+821
+01:13:19,160 --> 01:13:25,400
+home premise piece of software another way to think about this is iox represents the open source
+
+822
+01:13:25,400 --> 01:13:32,200
+thing represents the data plane whereas our closed source product represents the control plane
+
+823
+01:13:32,200 --> 01:13:37,080
+but the way the two interact is the control plane interacts with the data plane through its
+
+824
+01:13:37,080 --> 01:13:42,840
+public API and that public API it's open source so literally if somebody wanted to write
+
+825
+01:13:42,840 --> 01:13:47,880
+an open source control plane for it or if they wanted to write their own competing software
+
+826
+01:13:47,880 --> 01:13:53,880
+products they can do so and the license totally permits that yeah and the thing is like we don't
+
+827
+01:13:53,880 --> 01:13:59,800
+have to worry about our open source bits competing with our commercial bits because the truth is
+
+828
+01:13:59,800 --> 01:14:05,640
+like right there's like the the responsibilities of the two pieces of software are clearly delineated
+
+829
+01:14:05,640 --> 01:14:10,200
+so it's like there's no reason for people to put control being plain bits into the main open source
+
+830
+01:14:10,200 --> 01:14:15,320
+project they would have to create a separate open source project to do it which would make sense
+
+831
+01:14:16,040 --> 01:14:21,480
+right but that point you're kind of deciding what is control plane and what is data plane
+
+832
+01:14:21,480 --> 01:14:26,920
+and that's kind of the same concept of like what goes in core and what goes in proprietary isn't it
+
+833
+01:14:26,920 --> 01:14:31,880
+like what about backups well it could go right into our core offering but it's more of a control
+
+834
+01:14:31,880 --> 01:14:36,440
+plane kind of a thing so we'll put it over here it seems like you still make those decisions you
+
+835
+01:14:36,440 --> 01:14:42,760
+just make them in the two pieces of software further apart perhaps I view them as further apart
+
+836
+01:14:42,760 --> 01:14:47,560
+when I think of open core businesses I think of businesses where the commercial product
+
+837
+01:14:47,560 --> 01:14:53,560
+is a replacement for the open source products this this is not that and it's designed specifically
+
+838
+01:14:53,560 --> 01:14:58,600
+not to be that like take data stacks for instance data stacks enterprise is a replacement for
+
+839
+01:14:58,600 --> 01:15:04,680
+Cassandra right and now like data stacks is obviously offering it as a service called astra
+
+840
+01:15:05,480 --> 01:15:12,600
+that's doing well but again like that's an open core model that's yeah I think I think a good
+
+841
+01:15:12,600 --> 01:15:18,200
+example is like Google and Kubernetes right like Kubernetes open source Kubernetes certainly
+
+842
+01:15:18,200 --> 01:15:30,040
+doesn't represent the entirety of GCP and all the software that runs that but like obviously
+
+843
+01:15:30,040 --> 01:15:35,720
+Google has invested interest in you know driving Kubernetes forward and GCP happens to be like one of
+
+844
+01:15:35,720 --> 01:15:43,240
+the best places to buy Kubernetes to operate Kubernetes so what's your thoughts on the service
+
+845
+01:15:43,240 --> 01:15:48,600
+site public license in the last six move you obviously prefer this other way going about it but
+
+846
+01:15:48,600 --> 01:15:54,840
+you think it's a smart by them shortsighted what what you take on that so I don't think it's not
+
+847
+01:15:54,840 --> 01:16:00,040
+the move I would make and you know to be totally honest though like to me it's not really about a
+
+848
+01:16:00,040 --> 01:16:08,680
+license choice it's more about how they intend to drive innovation that drives you know commercial
+
+849
+01:16:08,680 --> 01:16:15,080
+value and the truth is like I own stock in MongoDB which is obviously SSPL licensed software
+
+850
+01:16:15,080 --> 01:16:19,720
+but I do not own stock in elastic nor would I buy stock in elastic right now yet I'm holding
+
+851
+01:16:19,720 --> 01:16:26,040
+MongoDB right even though they they're both SSPL so like from a pure you know mercenary investor
+
+852
+01:16:26,040 --> 01:16:30,920
+perspective I'm long Mongo but I'm short elastic and it has nothing to do with the license
+
+853
+01:16:31,560 --> 01:16:36,520
+I think them changing the license is more a symptom of the fact that they're getting out
+
+854
+01:16:36,520 --> 01:16:43,480
+innovated on their cloud offering if they had a cloud offering that was demonstrably better
+
+855
+01:16:43,480 --> 01:16:49,560
+than Amazon's elastic service they would continue to be able to drive revenue and drive people
+
+856
+01:16:49,560 --> 01:16:56,200
+to it if they're so upset because they feel like a last or sorry AWS is eating their lunch
+
+857
+01:16:56,200 --> 01:17:03,400
+on the hosted offering and then they you know they change their license like I mean ultimately
+
+858
+01:17:03,400 --> 01:17:10,680
+like they had a choice which was they either write more closed source code or they
+
+859
+01:17:10,680 --> 01:17:17,720
+re license their you know they they they continue right code out in the open I'm putting air quotes
+
+860
+01:17:17,720 --> 01:17:25,560
+around this but that code is under a different license they chose the different license path which
+
+861
+01:17:25,560 --> 01:17:30,440
+to me I think I mean personally I'm not a fan of source available licenses I think they're
+
+862
+01:17:30,440 --> 01:17:42,120
+disservice to the community because because then yeah yeah they are disservice to the community
+
+863
+01:17:42,120 --> 01:17:48,200
+because then you can say like oh community members like saw your code or whatever like it just means that
+
+864
+01:17:49,160 --> 01:17:57,000
+people can't start like competing projects with you without you know putting themselves at risk of being
+
+865
+01:17:57,000 --> 01:18:03,640
+you know accused of taking your code or whatever right like I prefer open code is open close code is
+
+866
+01:18:03,640 --> 01:18:11,800
+closed and the the thing that kind of annoys me about the whole elastic AWS standoff is both
+
+867
+01:18:11,800 --> 01:18:18,120
+of them are trying to you know put forth this position that they have you know more the moral high
+
+868
+01:18:18,120 --> 01:18:23,160
+ground there you know they have moral superiority over the other one right like Amazon saying like
+
+869
+01:18:23,160 --> 01:18:28,280
+oh we're protectors of open source so we're gonna launch this fork or whatever and the truth is
+
+870
+01:18:28,280 --> 01:18:33,240
+like even when they did open distro I called it a fork then even though they said it's not a fork
+
+871
+01:18:33,240 --> 01:18:38,840
+because it's like whatever a build it was all it was always obvious like when they launched that
+
+872
+01:18:38,840 --> 01:18:43,800
+that fork is what it was ultimately going to become because elastic was gonna take the stance
+
+873
+01:18:44,360 --> 01:18:49,880
+the Amazon stealing from us so we're gonna change the license a more and more of our code which is
+
+874
+01:18:49,880 --> 01:18:58,520
+then going to give Amazon no choice but to fork right right so Amazon's playing they they have the
+
+875
+01:18:58,520 --> 01:19:02,600
+moral high ground it's not true like they just they're just doing what's best for their customers
+
+876
+01:19:02,600 --> 01:19:07,880
+and they're sure shareholders right they're trying to optimize shareholder value and obviously like
+
+877
+01:19:07,880 --> 01:19:13,160
+all their customers are saying like host elastic for us and then elastic is trying to say like
+
+878
+01:19:13,160 --> 01:19:17,800
+oh we're doing this to protect ourselves from Amazon because they're stealing from us and the truth
+
+879
+01:19:17,800 --> 01:19:23,160
+is there are tons of hosting companies limited hosting elastic for a long time and if you look at
+
+880
+01:19:23,160 --> 01:19:28,120
+where elastic makes this money it's probably mostly from long search how many log search companies
+
+881
+01:19:28,120 --> 01:19:34,520
+are built on top of elastic and they just open that up right like so it's they're elastic is
+
+882
+01:19:34,520 --> 01:19:39,560
+just upset because Amazon out competed them on the hosting front whereas like other hosting providers
+
+883
+01:19:39,560 --> 01:19:45,400
+like compose and even and stuff like that didn't really make a dent in the elastic's top line
+
+884
+01:19:45,400 --> 01:19:50,760
+right so their claim like oh we have to do this like no you don't you could have kept the code
+
+885
+01:19:50,760 --> 01:19:56,360
+Apache B2 and you could have like written more and more code in your service offering that's
+
+886
+01:19:56,360 --> 01:20:02,600
+closed source and kept the two separate right and this is actually one of the things that I agree
+
+887
+01:20:02,600 --> 01:20:08,920
+with Amazon about where they said the reason they created the open distro was because elastic was
+
+888
+01:20:08,920 --> 01:20:13,960
+polluting the open source repo with code under different licenses right under the elastic license
+
+889
+01:20:13,960 --> 01:20:20,120
+and stuff like that and what they've done now is they've gone all in on that strategy so
+
+890
+01:20:20,920 --> 01:20:26,360
+basically like they want all the benefits of being an open source company you know free marketing
+
+891
+01:20:26,360 --> 01:20:31,480
+free adoption getting other people to talk about it use it whatever but they don't want to pay
+
+892
+01:20:31,480 --> 01:20:38,200
+the price the price of being really open source is that you're giving software away for free
+
+893
+01:20:38,200 --> 01:20:43,160
+yes you're being permitted but that also means that anybody can take your software and
+
+894
+01:20:43,160 --> 01:20:49,800
+compete with you which you have to be okay with like any any read anything that you can really
+
+895
+01:20:49,800 --> 01:20:57,160
+call platform is only a platform if the total economic activity of it outstrips that of any single
+
+896
+01:20:57,160 --> 01:21:02,840
+vendor right so if you claim your platform but basically you're getting all the money from it
+
+897
+01:21:02,840 --> 01:21:09,080
+no you're not like you're monopoly as you said in your tweets right this comes back to something
+
+898
+01:21:09,080 --> 01:21:14,840
+you were saying which in your stance for not 2.0 in terms of influx what you're doing but
+
+899
+01:21:14,840 --> 01:21:19,080
+the next version I think you call it Iox this maybe version 3 I'm not sure what you call it but
+
+900
+01:21:19,080 --> 01:21:25,800
+you said by design it's a permissive and you just you've designed your architecture in terms of
+
+901
+01:21:25,800 --> 01:21:34,280
+commercial offering to expect other competitors whereas it seems like elastic based on what you
+
+902
+01:21:34,280 --> 01:21:38,840
+saying others have said and even kind of what they're depicting is that they're upset that Amazon is
+
+903
+01:21:38,840 --> 01:21:45,160
+either lunch and it's not by design their model is not by design to be competed with right exactly
+
+904
+01:21:45,160 --> 01:21:50,440
+like their their hope was that they would get this massively popular project which it is elastic
+
+905
+01:21:50,440 --> 01:21:57,480
+is top 10 database project right like used the world over but then they want like the classic
+
+906
+01:21:57,480 --> 01:22:02,920
+strategy is like you spend a bunch of money to get optimized growth and then once you have scale
+
+907
+01:22:02,920 --> 01:22:10,040
+and a monopoly you want to start collecting monopoly rents right so now elastic can't collect
+
+908
+01:22:10,040 --> 01:22:14,840
+monopoly rents because other people are hosting elastic they're so they're trying to change the
+
+909
+01:22:14,840 --> 01:22:20,040
+model so they can do that but the problem is like then you're a different sort of business entirely
+
+910
+01:22:20,040 --> 01:22:25,720
+right like it's fine to be a closed source database company there's fauna which is new firebase
+
+911
+01:22:25,720 --> 01:22:30,360
+is closed like in the cloud each of the cloud providers has a handful of closed source databases
+
+912
+01:22:30,360 --> 01:22:37,160
+so that's a totally fine thing to do but to try and say like oh we're open source and then change
+
+913
+01:22:37,160 --> 01:22:43,720
+it it's just like it's kind of ridiculous we'll pull fascinating stuff thanks for sharing your
+
+914
+01:22:43,720 --> 01:22:47,880
+your take with us definitely want to come and have you back once you've rolled out this new what
+
+915
+01:22:47,880 --> 01:22:55,000
+you call complimentary model yeah some real world results to report back how it's going if it's
+
+916
+01:22:55,000 --> 01:22:58,920
+serving the needs of you and your users and the open source community the way that you hope it
+
+917
+01:22:58,920 --> 01:23:03,720
+will we'll love to have you back on the show yeah i think that's just one closing thought on that
+
+918
+01:23:03,720 --> 01:23:09,400
+really quick which you reminded me of which is like i think for people to think about it can
+
+919
+01:23:09,400 --> 01:23:14,440
+open permissive open source licensing survive and infrastructure software i totally think it can
+
+920
+01:23:14,440 --> 01:23:20,280
+but i think the people who are producing it have to think ahead of time about how they commercialize
+
+921
+01:23:20,280 --> 01:23:28,040
+it over the long run and for us with iox i've already defined what success looks like is
+
+922
+01:23:28,040 --> 01:23:34,200
+tons of competitors literally cloud providers adopting the software and competing with us
+
+923
+01:23:34,200 --> 01:23:39,480
+so what that which isn't gonna happen for years best case scenario right if it happens at all
+
+924
+01:23:39,480 --> 01:23:45,480
+but what that means is we are developing a commercial product side by side with the open product
+
+925
+01:23:45,480 --> 01:23:50,440
+right now so that if cloud providers decide they want to get in on the game three years from now
+
+926
+01:23:50,440 --> 01:23:55,320
+we've already had plenty of time to actually build a product to you know compete
+
+927
+01:23:55,320 --> 01:24:01,640
+hmm stay tuned for results as they come out thanks Paul really appreciate you come on the show
+
+928
+01:24:01,640 --> 01:24:02,840
+all right thanks guys
+
+929
+01:24:05,320 --> 01:24:10,120
+next we're talking with vicky brusor vicky has been in free and open source software for 30
+
+930
+01:24:10,120 --> 01:24:14,760
+years now and she's been working with startups and enterprises doing open source and free software
+
+931
+01:24:14,760 --> 01:24:20,360
+business strategy for quite a while we use vicky's post titled elastic search and kabana are now
+
+932
+01:24:20,360 --> 01:24:25,880
+business risks as a reference on the situation we even quoted her post a few times in our conversation
+
+933
+01:24:25,880 --> 01:24:31,080
+with Heather Meeker so naturally we had a talk with her here we go all right so here is vicky brusor
+
+934
+01:24:31,080 --> 01:24:38,120
+and vicky share with us first of all your position in the open source world like what your angle
+
+935
+01:24:38,120 --> 01:24:42,760
+at the conversation that we're having where you coming from um i do corporate strategy around
+
+936
+01:24:42,760 --> 01:24:47,560
+free and open source software so i work with startups and enterprises and various organizations
+
+937
+01:24:47,560 --> 01:24:52,920
+to help them be more successful by contributing releasing and just generally becoming a good
+
+938
+01:24:52,920 --> 01:24:57,400
+citizen in free and open source software communities in a way that's both good for their bottom
+
+939
+01:24:57,400 --> 01:25:03,080
+line and for the communities okay and you've been doing this for a while yeah i have i've been
+
+940
+01:25:03,080 --> 01:25:07,800
+in free and open source software for over 30 years and i've been doing this specific thing um for
+
+941
+01:25:07,800 --> 01:25:13,400
+yeah quite a while now awesome well we're glad we got you on the show then so you wrote a piece
+
+942
+01:25:13,400 --> 01:25:18,360
+called elastic search and kabana are now business risks and when you lay out the case for that
+
+943
+01:25:18,360 --> 01:25:22,760
+headline do you want to share that with our audience just the the brief synopsis of why you believe
+
+944
+01:25:22,760 --> 01:25:27,880
+that's the case with this service i've public license well i mean sspl i'm going to lead to the lawyers
+
+945
+01:25:28,600 --> 01:25:34,040
+this is a legal matter but it is not an open source license it is however being portrayed as open
+
+946
+01:25:34,040 --> 01:25:39,320
+which everybody is going to interpret as open source because that's just the way we speak about
+
+947
+01:25:39,320 --> 01:25:44,200
+things i think that in and of itself is kind of deceptive and that's a problem um but the bigger
+
+948
+01:25:44,200 --> 01:25:50,760
+problem is that this is a license change and uh if you are going to use something you are agreeing
+
+949
+01:25:50,760 --> 01:25:59,480
+to that license if you upgrade elastic search or kabana to i believe it was seven dot 11 if i recall
+
+950
+01:25:59,480 --> 01:26:05,560
+but if you upgrade you are tacitly or otherwise we're agreeing to this new license as as pl or
+
+951
+01:26:05,560 --> 01:26:11,640
+elastic license it doesn't matter you're agreeing to that you're taking on new obligations
+
+952
+01:26:11,640 --> 01:26:17,160
+for your company for your organization are you aware of that do you know what you're taking on
+
+953
+01:26:17,160 --> 01:26:21,960
+do you know the potential risks you might have or maybe there are benefits i don't know
+
+954
+01:26:23,000 --> 01:26:28,760
+but this is not something that you as a company can afford to ignore because it can have huge
+
+955
+01:26:28,760 --> 01:26:35,000
+ramifications to your code base i see so like the side swipe is a big problem the fact that so many
+
+956
+01:26:35,000 --> 01:26:41,000
+people might upgrade and unbeknownst to them they're agreement with the software that they're running
+
+957
+01:26:41,000 --> 01:26:47,240
+and the companies involved has changed is there no transparency to that change is the is it not
+
+958
+01:26:47,240 --> 01:26:51,880
+something that people are aware of or how does it how's it um the only transparency really is going
+
+959
+01:26:51,880 --> 01:26:57,880
+to be that blog posts or i guess there's like two blog posts now with the elastic finger wagging
+
+960
+01:26:57,880 --> 01:27:05,480
+at amazon and also screwing over their entire community and ecosystem but hey that's their strategic
+
+961
+01:27:05,480 --> 01:27:12,040
+decision to make they seem to think that was the right move for them um more power to them um yeah
+
+962
+01:27:12,040 --> 01:27:17,560
+that's really the only warning um you're otherwise not going to know as far as i know i haven't
+
+963
+01:27:17,560 --> 01:27:22,760
+obviously looked at the code um but it doesn't make any sense that there'd be some sort of a
+
+964
+01:27:22,760 --> 01:27:28,840
+new click through on elastic surgeon and kibana for instance um as you're installing them on
+
+965
+01:27:28,840 --> 01:27:33,000
+your server how are you going to confirm that yes i have seen that there is a new license
+
+966
+01:27:33,000 --> 01:27:37,560
+and yes i agree with this new license nobody does that not for open source software and
+
+967
+01:27:37,560 --> 01:27:43,640
+especially not on the server side um so it's very likely people are going to upgrade and
+
+968
+01:27:43,640 --> 01:27:49,080
+tacitly agree to this whether they know it or not or maybe they know about this new license
+
+969
+01:27:49,080 --> 01:27:55,240
+that they decide not to upgrade at all well now you're not getting security updates to this
+
+970
+01:27:55,240 --> 01:28:01,800
+software to elastic search to kibana that's another potential risk to your company um maybe you're
+
+971
+01:28:01,800 --> 01:28:07,720
+using these things for free and a great deal of people build a lot of cool stuff on top of the elk
+
+972
+01:28:07,720 --> 01:28:13,320
+stack there's a reason why there's an acronym that we all know the elk stack it is that popular
+
+973
+01:28:14,200 --> 01:28:17,720
+so a lot of people are building on this and they might be building on the free version
+
+974
+01:28:17,720 --> 01:28:21,720
+um well that free version is not going to get real license and you're going to be screwed but
+
+975
+01:28:21,720 --> 01:28:27,640
+if you're building a company on top of this open source software and your company relies upon it
+
+976
+01:28:27,640 --> 01:28:32,680
+and you're not already paying for some sort of support either from elastic or someone else
+
+977
+01:28:32,680 --> 01:28:37,880
+you're also putting your company at risk in that way so there's a lot of really really important
+
+978
+01:28:38,440 --> 01:28:43,000
+strategic things that people need to be considering when they are selecting open source software
+
+979
+01:28:43,000 --> 01:28:48,200
+and you need to be remain aware of your entire free and open source software supply chain because
+
+980
+01:28:48,200 --> 01:28:54,440
+as we are seeing right here it can shift out from under you you can have license changes,
+
+981
+01:28:54,440 --> 01:28:59,640
+you can have security problems, you can have maintainers who just you know piece out and they go away
+
+982
+01:28:59,640 --> 01:29:04,760
+and suddenly are using something that's completely unmaintained so there's a lot of risk there for a
+
+983
+01:29:04,760 --> 01:29:09,000
+company and most companies I've worked with are completely unaware of this and it's
+
+984
+01:29:09,000 --> 01:29:15,240
+uh potentially a disaster waiting to happen I mean as we all know this is what happened with um
+
+985
+01:29:16,040 --> 01:29:25,720
+oh that a credit reporting thing um starts with an E. Equifax. Equifax thank you.
+
+986
+01:29:26,520 --> 01:29:30,200
+Now I've been saying elastic so often that's all I need to say. That's the no that's the only
+
+987
+01:29:30,200 --> 01:29:36,520
+E in your room. Exactly thank you guys um yeah that was Equifax was not paying attention to their
+
+988
+01:29:36,520 --> 01:29:41,160
+open source software supply chain you know they had a piece of software and they're
+
+989
+01:29:41,160 --> 01:29:45,240
+believed it may have been Apache struts or something like that that had been upgraded to fix a
+
+990
+01:29:45,240 --> 01:29:50,920
+security hole but they hadn't bothered to upgrade it internally because they weren't paying that much
+
+991
+01:29:50,920 --> 01:29:56,040
+attention then they got compromising billions of people had their private information stolen so if you
+
+992
+01:29:56,040 --> 01:30:01,960
+not paying attention to stuff like this not only elastic but the larger picture you are just
+
+993
+01:30:01,960 --> 01:30:08,200
+one bad day away from being the next Equifax and do you want to do that? Is there a right way that
+
+994
+01:30:08,200 --> 01:30:14,200
+elastic could have done this in terms of just forget the decision the SSPL but like let's say I just
+
+995
+01:30:14,200 --> 01:30:18,440
+want to change my license is there like a correct get like start a new project with the new
+
+996
+01:30:18,440 --> 01:30:23,720
+license is there like a best practices for changing a license that doesn't sweep out the rug from
+
+997
+01:30:23,720 --> 01:30:30,760
+people potentially um for an open source project there there's obviously many different ways
+
+998
+01:30:30,760 --> 01:30:35,880
+you can do it and elastic has their perspective which is going to come from a very you know corporate
+
+999
+01:30:35,880 --> 01:30:40,120
+perspective we're looking to make money um and then the community will be coming from a different
+
+1000
+01:30:40,120 --> 01:30:46,040
+perspective so it you can have different approaches but the one thing everyone should always do
+
+1001
+01:30:46,040 --> 01:30:51,720
+is be communicating with their community and their ecosystem this cut everyone by surprise
+
+1002
+01:30:52,600 --> 01:30:58,200
+that shows that elastic is not respecting the community and the people who have been contributing
+
+1003
+01:30:58,200 --> 01:31:04,760
+and who rely on this software so they have essentially looked at their ecosystem and said yeah we don't
+
+1004
+01:31:04,760 --> 01:31:12,520
+care we don't care what you're doing because all we want to do is screw over Amazon and collateral
+
+1005
+01:31:12,520 --> 01:31:17,000
+damage began so they should have communicated they should have told people this is going to be
+
+1006
+01:31:17,000 --> 01:31:25,720
+coming maybe they should have done it for instance at version 8.0 rather than version from 7.10
+
+1007
+01:31:25,720 --> 01:31:32,600
+to 7.11 yeah go to a major version maybe that would have been smarter um maybe cut a major version
+
+1008
+01:31:32,600 --> 01:31:42,040
+right there just do that maybe you could have warped it internally and start developing internally
+
+1009
+01:31:42,040 --> 01:31:48,440
+and then leave the open source project alone for other people to build upon and you can even
+
+1010
+01:31:48,440 --> 01:31:53,320
+you know push stuff upstream and pull stuff downstream you can still benefit from that
+
+1011
+01:31:53,320 --> 01:31:59,960
+while having your proprietary internally developed software you can still do that I mean there's lots
+
+1012
+01:31:59,960 --> 01:32:04,600
+of different options they could have done but the one thing they should have done and did not
+
+1013
+01:32:04,600 --> 01:32:10,840
+it was communicate with their ecosystem with their community they pop this on everyone and it was kind
+
+1014
+01:32:10,840 --> 01:32:18,280
+of rude they violated the trust of their community and that you can't really get that back at this
+
+1015
+01:32:18,280 --> 01:32:24,040
+point so you're kind of screwed the trust of your community and you've submerged your brand
+
+1016
+01:32:24,680 --> 01:32:29,400
+which is going to be incredibly difficult to fix it's a somewhat too elastic credit and maybe I'm
+
+1017
+01:32:29,400 --> 01:32:34,680
+wrong by even saying this but it seems like they've gone through a lot that when she had mentioned
+
+1018
+01:32:34,680 --> 01:32:41,400
+the CTO of elastic mentioned the litigation and the behind the scenes discussions I think from
+
+1019
+01:32:41,400 --> 01:32:46,600
+the asset it might be easy to say screwed over but the new ones there I think is they've gone
+
+1020
+01:32:46,600 --> 01:32:52,760
+through a lot and maybe they're in some ways quite wrong and reactionary but I'd say in some ways at
+
+1021
+01:32:52,760 --> 01:32:57,480
+least depicted by these tweets and this post maybe they went about it wrong but their intention
+
+1022
+01:32:58,200 --> 01:33:03,800
+was to try to fix this problem which is very difficult to fix because our permissive license
+
+1023
+01:33:03,800 --> 01:33:09,160
+license does allow this competition and maybe from a business standpoint they've sort of hit their
+
+1024
+01:33:09,160 --> 01:33:15,640
+links with being able to take that in quotes their quotes at least abuse from Amazon and they're
+
+1025
+01:33:15,640 --> 01:33:23,560
+just trying to tread water to some degree with the scenario I know that this is a podcast and so
+
+1026
+01:33:23,560 --> 01:33:31,480
+people can't see but me but picture me rolling my eyes right now okay so the trademark thing aside
+
+1027
+01:33:31,480 --> 01:33:36,360
+that's a different matter that lawsuit for the trademark is a separate issue if they are
+
+1028
+01:33:36,360 --> 01:33:44,520
+licensing as a a reaction to that then it's essentially them stamping the little princess for
+
+1029
+01:33:44,520 --> 01:33:52,520
+taking their ball and going home and it's a childish reaction to a trademark infringement lawsuit
+
+1030
+01:33:52,520 --> 01:33:58,200
+which you know I I do think that they are I mean they were totally justified in that lawsuit
+
+1031
+01:33:58,200 --> 01:34:02,360
+for their trademark infringement against Amazon I have absolutely no problem with that I do think
+
+1032
+01:34:02,360 --> 01:34:10,280
+that Amazon was rolling the dice on that one and they lost and I think they will lose in that
+
+1033
+01:34:10,280 --> 01:34:16,680
+particular trademark thing but I am not a lawyer so right that's just my legal advice all right
+
+1034
+01:34:16,680 --> 01:34:24,600
+that's just your take so but the relaxing you know if they screwed up at the very beginning
+
+1035
+01:34:24,600 --> 01:34:31,560
+by not understanding what a permissive license allows and what that is they they screwed that up
+
+1036
+01:34:31,560 --> 01:34:37,800
+they put it out there under a permissive Apache to license without thinking somebody can now build
+
+1037
+01:34:37,800 --> 01:34:43,720
+a better product offering on top of this very easily and if they're building a better product
+
+1038
+01:34:43,720 --> 01:34:49,480
+offering than we are I'm sorry folks we live in a capitalistic system that's just the way these
+
+1039
+01:34:49,480 --> 01:34:56,600
+things go it's your fault for releasing your intellectual property under that sort of license
+
+1040
+01:34:56,600 --> 01:35:02,840
+and not understanding what it's going to mean and if you did understand not taking enough measures
+
+1041
+01:35:03,480 --> 01:35:09,080
+to make sure that even if that does happen you can still be successful and frankly if you look
+
+1042
+01:35:09,080 --> 01:35:15,640
+at their numbers and their financials they are doing quite well so yeah what are they looking to do
+
+1043
+01:35:15,640 --> 01:35:20,760
+how are they going to looking to grab all these people who are using the Amazon ecosystem and
+
+1044
+01:35:20,760 --> 01:35:27,880
+move them over to elastic search and to elastic I don't think that's going to happen from a market
+
+1045
+01:35:27,880 --> 01:35:33,160
+perspective so I it's very difficult to see strategically why they thought this might have been a
+
+1046
+01:35:33,160 --> 01:35:39,880
+good move to just give their entire ecosystem the finger while trying to take a shot at Amazon it
+
+1047
+01:35:39,880 --> 01:35:46,520
+just it kind of seems I know amateurish and I would have expected better of a company that's been
+
+1048
+01:35:46,520 --> 01:35:52,360
+around for this long so let's say I was a happy elastic search user a month ago and here I am today
+
+1049
+01:35:52,360 --> 01:35:57,480
+and I'm like Vicki what do I do they did change the license on me I don't know what to do do you
+
+1050
+01:35:57,480 --> 01:36:05,000
+say what do you say to that go to the Amazon fork or I will say I don't know it depends of course I
+
+1051
+01:36:05,000 --> 01:36:10,600
+have been known to do a fair bit of consulting and so any consultant who isn't starting up with
+
+1052
+01:36:10,600 --> 01:36:17,400
+it depends is you know trying to sell you something all right so it totally depends what are your needs
+
+1053
+01:36:17,400 --> 01:36:23,240
+how much do you rely on that elastic search or on that cabana we have to remember there are two
+
+1054
+01:36:23,240 --> 01:36:27,480
+really big projects here that have been realized since it's not just that elastic search so
+
+1055
+01:36:28,280 --> 01:36:34,520
+what is the strategic value and the architectural value of that piece of software to your product
+
+1056
+01:36:34,520 --> 01:36:40,120
+to your company look at that first what is the niche it is filling and then well anything else
+
+1057
+01:36:40,120 --> 01:36:46,040
+fill it and it could be that as you evaluate this and you look at it it makes sense to just pay
+
+1058
+01:36:46,040 --> 01:36:52,680
+elastic for their software fine that is a valid choice and I support you doing that I want your
+
+1059
+01:36:52,680 --> 01:36:57,960
+company to be successful but you might also find that there are other alternatives you might
+
+1060
+01:36:57,960 --> 01:37:04,440
+there are a couple of forks now um there's as we all know the the thing that kicked all this off
+
+1061
+01:37:04,440 --> 01:37:09,240
+which is Amazon's open distribution for elastic search from the last time elastic search did
+
+1062
+01:37:09,240 --> 01:37:15,480
+something kind of goofy in their open source world um and then there's they have their new
+
+1063
+01:37:15,480 --> 01:37:22,440
+totally open distribution that Amazon just forked and I think there's a third one um which is from
+
+1064
+01:37:22,440 --> 01:37:30,040
+log z.io something like that there's at least one other uh version out there there may be others
+
+1065
+01:37:30,040 --> 01:37:35,800
+and maybe you don't need elastic search at all maybe you just need Lucy you know um and if you
+
+1066
+01:37:35,800 --> 01:37:42,280
+using kabana yeah exactly maybe Grafana would be better for you I don't know it depends upon your needs
+
+1067
+01:37:42,280 --> 01:37:47,160
+don't go doing something just because it's what everyone else is doing look at your needs your
+
+1068
+01:37:47,160 --> 01:37:54,200
+company your architecture your budgets your staffing who knows what software do you have to ramp
+
+1069
+01:37:54,200 --> 01:37:58,920
+up on something new there's lots of variables in there and so I can't give it one size fits all
+
+1070
+01:37:58,920 --> 01:38:06,440
+I'll talk about you just ask you once in the whole community could just listen to you know let's multi-caste
+
+1071
+01:38:06,440 --> 01:38:10,680
+oh no there is no single solution to any of this sort of stuff because every one of these
+
+1072
+01:38:10,680 --> 01:38:15,480
+companies is going to be different if they were all the same then we wouldn't need them all right
+
+1073
+01:38:15,480 --> 01:38:20,280
+we we'd have one market one company boom you're done but we don't have one license
+
+1074
+01:38:20,280 --> 01:38:25,560
+one license gosh wouldn't that be oh my gosh that would be so easy that it's so nice
+
+1075
+01:38:25,560 --> 01:38:30,280
+but that's what we do we wouldn't need a consultant at that point well yeah but I do corporate
+
+1076
+01:38:30,280 --> 01:38:34,840
+strategy it's not simply that licensing it's about so much more than that that's just a tiny
+
+1077
+01:38:34,840 --> 01:38:38,280
+sliver well if you want to respect your time is there anything else that you want to share that
+
+1078
+01:38:38,280 --> 01:38:41,560
+we didn't ask you any questions that like you just want to put this out there that we have an
+
+1079
+01:38:41,560 --> 01:38:45,560
+ask your question to at least oh no not really I think you've you've covered pretty much the
+
+1080
+01:38:45,560 --> 01:38:50,760
+highlights of the stuff and it'll be interesting to see what others have to say um yeah I don't
+
+1081
+01:38:50,760 --> 01:38:56,760
+typically listen to podcasts but maybe I'll actually listen to this one there we go well you might
+
+1082
+01:38:56,760 --> 01:39:01,000
+hear me thank you at least once before I think you right now for your time but uh thank you
+
+1083
+01:39:01,000 --> 01:39:05,640
+really for your time and for this blog post you shared it was very helpful for us to sort of get
+
+1084
+01:39:05,640 --> 01:39:10,680
+a different perspective on these concerns around open source quoted a couple of things you'd
+
+1085
+01:39:10,680 --> 01:39:14,680
+mentioned in your blog post in the conversation with Heather Meeker which is a part of the show too
+
+1086
+01:39:14,680 --> 01:39:19,240
+but thank you for your post and also today thank you for your time we appreciate it absolutely
+
+1087
+01:39:19,240 --> 01:39:29,160
+thanks again last up on this epic show is Marcus Stengvist who's self-described as an
+
+1088
+01:39:29,160 --> 01:39:34,920
+everyday web developer from Sweden let's do this please tell us who you are and your vantage point
+
+1089
+01:39:34,920 --> 01:39:42,200
+on the software world yeah well I I'm just a normal everyday web developer from Sweden awesome
+
+1090
+01:39:42,200 --> 01:39:49,160
+my name is Marcus so I work for a small company no one has heard of yes yet there you go
+
+1091
+01:39:49,160 --> 01:39:56,280
+yeah exactly how did you first hear about the news of elastics relaxing just curious like where do
+
+1092
+01:39:56,280 --> 01:40:04,920
+you get your info yeah well I read the article from elastic on hacking use so I saw that I'm posting
+
+1093
+01:40:04,920 --> 01:40:11,000
+like this is not okay or something in those lines awesome well we're gathering perspectives from
+
+1094
+01:40:11,000 --> 01:40:16,760
+all over the community so it's awesome to have just a regular everyday web developer here on the show
+
+1095
+01:40:16,760 --> 01:40:20,680
+so welcome and yeah what do you think what are your thoughts on the whole situation there's
+
+1096
+01:40:20,680 --> 01:40:26,920
+lots of nuance lots of ins lots of outs yeah exactly exactly yeah well I read a lot of comments and
+
+1097
+01:40:26,920 --> 01:40:35,000
+I read the Amazon article as well when they posted about like forking the report after they
+
+1098
+01:40:35,000 --> 01:40:43,560
+realized the elastic and I really don't even use elastic or Amazon website that much but I
+
+1099
+01:40:43,560 --> 01:40:51,080
+think I care a lot about open source in general so so I'm with you I don't use AWS I don't use
+
+1100
+01:40:51,080 --> 01:40:54,840
+elastic I also care a lot of open source what is it about open source that you'd like or that
+
+1101
+01:40:54,840 --> 01:41:00,840
+you care about and are trying to preserve or be a part of that's a good question I think it's
+
+1102
+01:41:02,040 --> 01:41:09,800
+the matter of fact that I can use stuff for free and like chairs with colleagues and people
+
+1103
+01:41:09,800 --> 01:41:16,920
+all around the world without any restrictions and no one is like can forbid me from using stuff
+
+1104
+01:41:16,920 --> 01:41:23,480
+which I want to use so when you first heard about the real license to the sspl what was your hot
+
+1105
+01:41:23,480 --> 01:41:29,320
+take what was your emotional reaction were you indifferent were you mad at elastic did it feel
+
+1106
+01:41:29,320 --> 01:41:32,760
+like it's no longer open source or do you still think it's still in the spirit of open source
+
+1107
+01:41:32,760 --> 01:41:42,760
+well I think I am actually very much on the elastic side for me okay I saw a lot of comments on
+
+1108
+01:41:42,760 --> 01:41:49,080
+how can you use that word like oh Amazon is all in the rights and yeah the other but they have
+
+1109
+01:41:49,080 --> 01:41:55,800
+they have actually done the same with MongoDB if you like two years ago I guess right where they
+
+1110
+01:41:55,800 --> 01:42:03,800
+pushed them to basically real license because they simply don't want to pay I guess their fees
+
+1111
+01:42:07,000 --> 01:42:15,560
+I think Amazon could could be a bit more friendly towards those open source companies and
+
+1112
+01:42:15,560 --> 01:42:22,840
+because right now when they use the products for free and maybe they hurt the possibilities of
+
+1113
+01:42:22,840 --> 01:42:28,760
+future open source companies coming forward so if you were an elastic user elastic search user
+
+1114
+01:42:28,760 --> 01:42:33,080
+yeah I have been in the past you have been but if you were today like when you read the
+
+1115
+01:42:33,080 --> 01:42:37,960
+real license you would have been probably last it would not have concerned you or offended you
+
+1116
+01:42:37,960 --> 01:42:45,320
+or changed the way you looked at elastic search well I think it's sad that they have to do it
+
+1117
+01:42:45,320 --> 01:42:53,640
+that they have to realize that they feel like they need to and that's that's what made me think
+
+1118
+01:42:53,640 --> 01:42:59,720
+that their move is kind of okay anyway because I will still support them and I would rather use them
+
+1119
+01:42:59,720 --> 01:43:07,000
+than the fork created by Amazon yeah so the fork still exists under the the new fork which is
+
+1120
+01:43:07,000 --> 01:43:13,000
+created by Amazon and trying to carry on from that point forward I think it still exists under
+
+1121
+01:43:13,000 --> 01:43:19,720
+the previous license but you would continue with elastic versus the elastic search and
+
+1122
+01:43:19,720 --> 01:43:27,400
+component forks that are run by AWS now exactly and that's simply because I believe in their
+
+1123
+01:43:27,400 --> 01:43:32,920
+vision or I believe in their product and I think Amazon is going to have a hard time
+
+1124
+01:43:33,720 --> 01:43:38,200
+keeping up or maybe they won't I am not sure but time will tell on that yeah time will tell
+
+1125
+01:43:38,200 --> 01:43:45,880
+that of course but the same goes with MongoDB and their document to be I guess I still think
+
+1126
+01:43:45,880 --> 01:43:53,560
+MongoDB is a superior choice just because it's their project and their their vision so the
+
+1127
+01:43:53,560 --> 01:43:59,480
+so you're not an open source purest then not at all not at all more pragmatic more about free
+
+1128
+01:43:59,480 --> 01:44:04,440
+and open and available have you thought about any of the other licenses like the source available
+
+1129
+01:44:04,440 --> 01:44:09,320
+licenses are you cool with that and these other things like business source licensing surely these
+
+1130
+01:44:09,320 --> 01:44:13,080
+are things that you've read about being in the open source world are these things that you're
+
+1131
+01:44:13,080 --> 01:44:18,360
+also just like whatever you want to license your code as if I can use it for free and contribute
+
+1132
+01:44:18,360 --> 01:44:25,000
+back somehow it's cool yeah I think it's cool like every license is their own choice if you want
+
+1133
+01:44:25,000 --> 01:44:33,720
+to license your work in certain ways your choice and if you want to share your work with others
+
+1134
+01:44:33,720 --> 01:44:42,840
+that's just a possible thing and I feel in this case like Amazon is hurting the possibility to do
+
+1135
+01:44:42,840 --> 01:44:50,440
+that awesome anything any other thoughts no I think yeah you people that are on like Amazon side
+
+1136
+01:44:50,440 --> 01:44:59,640
+should maybe read the article from Frederick lord nay or something like that okay which is like
+
+1137
+01:44:59,640 --> 01:45:07,720
+I'm tick crunch called ABS gives open source to middle finger I think that's an article that
+
+1138
+01:45:07,720 --> 01:45:13,240
+sums up my views pretty well awesome hand that off to me and we'll include in the shadows for
+
+1139
+01:45:13,240 --> 01:45:20,280
+everybody yeah appreciate you hopping on and sharing your opinion with us yeah thank you all right
+
+1140
+01:45:20,280 --> 01:45:24,840
+that was an epic episode thank you so much for tuning in if you haven't heard yet we have a
+
+1141
+01:45:24,840 --> 01:45:30,200
+membership it's called change log plus plus because hate when I increment things it is better
+
+1142
+01:45:30,200 --> 01:45:36,040
+as they say you can subscribe at change log dot com slash plus plus get closer to the metal
+
+1143
+01:45:36,040 --> 01:45:43,720
+make the ads disappear and of course support all of our podcasts again change log dot com slash
+
+1144
+01:45:43,720 --> 01:45:49,720
+plus plus and of course huge thanks to our partners linode fastly and lunch darkly also thanks
+
+1145
+01:45:49,720 --> 01:45:53,800
+to brake master cylinder for making all of our awesome beats and of course thanks to you for
+
+1146
+01:45:53,800 --> 01:45:58,520
+listening we appreciate your attention we appreciate you listening and one more step you could take
+
+1147
+01:45:58,520 --> 01:46:03,800
+is to join the community change log dot com slash community it's free to join come hang of us in slack
+
+1148
+01:46:03,800 --> 01:46:31,800
+call this place your home change log dot com slash community that's it for this week we'll see you next week
+
+1149
+01:46:33,800 --> 01:46:35,800
+we'll see you next week
+
