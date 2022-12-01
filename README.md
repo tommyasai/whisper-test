@@ -18,7 +18,6 @@
 | base.en | 135min | 0.79 | ◎ |  |
 | small.en | 37min | 2.9 | ◎ |  |
 | medium.en | 6h 57min | 0.25 | ◎ |  |
-| tiny | 20min
-94min - without —language specified | 5.35 | ◎ |  |
+| tiny | 20min (94min without —lang specified) | 5.35 | ◎ |  |
 
 Ref: [Available Models](https://github.com/openai/whisper/blob/02aa851a49/README.md#available-models-and-languages)
